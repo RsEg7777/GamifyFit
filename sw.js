@@ -8,7 +8,7 @@ const CACHE_NAME = `GamifyFit-cache-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `GamifyFit-dynamic-${CACHE_VERSION}`;
 const API_CACHE = `GamifyFit-api-${CACHE_VERSION}`;
 
-// Static assets to precache
+// Static assets to precache - only files that exist
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -23,24 +23,13 @@ const STATIC_ASSETS = [
   '/profile.html',
   '/offline.html',
   '/manifest.json',
+  '/favicon.svg',
   '/css/global.css',
-  '/css/dashboard.css',
-  '/css/challenges.css',
-  '/css/plan.css',
-  '/css/leaderboard.css',
-  '/js/auth.js',
-  '/js/onboarding.js',
-  '/js/dashboard.js',
   '/js/googlefit.js',
   '/js/planGenerator.js',
   '/js/gamification.js',
-  '/js/leaderboard.js',
   '/js/pwa.js',
-  '/js/notifications.js',
-  '/assets/icons/icon-192x192.png',
-  '/assets/icons/icon-512x512.png',
-  '/assets/icons/maskable-icon-192x192.png',
-  '/assets/icons/maskable-icon-512x512.png'
+  '/js/notifications.js'
 ];
 
 // API endpoints that should use network-first strategy
