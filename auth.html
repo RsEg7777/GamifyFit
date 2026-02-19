@@ -453,10 +453,10 @@
           <div id="login-alert" class="alert" style="display: none;"></div>
           
           <div class="oauth-buttons">
-            <button type="button" class="btn-oauth" id="google-login">
+            <a href="/api/auth/google" class="btn-oauth" style="text-decoration: none;">
               <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
               Continue with Google
-            </button>
+            </a>
           </div>
           
           <div class="divider">or continue with email</div>
@@ -498,10 +498,10 @@
           <div id="register-alert" class="alert" style="display: none;"></div>
           
           <div class="oauth-buttons">
-            <button type="button" class="btn-oauth" id="google-register">
+            <a href="/api/auth/google" class="btn-oauth" style="text-decoration: none;">
               <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
               Sign up with Google
-            </button>
+            </a>
           </div>
           
           <div class="divider">or register with email</div>
@@ -736,29 +736,6 @@
           window.location.href = '/onboarding.html';
         }, 1500);
       }, 1500);
-    });
-    
-    // Google OAuth - redirect to serverless function
-    document.getElementById('google-login').addEventListener('click', (e) => {
-      e.preventDefault();
-      console.log('Google login clicked - redirecting to /api/auth/google');
-      try {
-        window.location.href = '/api/auth/google';
-      } catch (error) {
-        console.error('Error redirecting to Google OAuth:', error);
-        alert('Error: ' + error.message);
-      }
-    });
-    
-    document.getElementById('google-register').addEventListener('click', (e) => {
-      e.preventDefault();
-      console.log('Google register clicked - redirecting to /api/auth/google');
-      try {
-        window.location.href = '/api/auth/google';
-      } catch (error) {
-        console.error('Error redirecting to Google OAuth:', error);
-        alert('Error: ' + error.message);
-      }
     });
     
     // Check for OAuth errors in URL
