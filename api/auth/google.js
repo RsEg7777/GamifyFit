@@ -1,9 +1,11 @@
+import { randomUUID } from 'crypto';
+
 export default function handler(req, res) {
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const redirectUri = `${getBaseUrl(req)}/api/auth/callback`;
   
   // Generate state for CSRF protection
-  const state = crypto.randomUUID();
+  const state = randomUUID();
   
   const params = new URLSearchParams({
     client_id: clientId,
