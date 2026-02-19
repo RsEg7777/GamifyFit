@@ -741,12 +741,24 @@
     // Google OAuth - redirect to serverless function
     document.getElementById('google-login').addEventListener('click', (e) => {
       e.preventDefault();
-      window.location.assign('/api/auth/google');
+      console.log('Google login clicked - redirecting to /api/auth/google');
+      try {
+        window.location.href = '/api/auth/google';
+      } catch (error) {
+        console.error('Error redirecting to Google OAuth:', error);
+        alert('Error: ' + error.message);
+      }
     });
     
     document.getElementById('google-register').addEventListener('click', (e) => {
       e.preventDefault();
-      window.location.assign('/api/auth/google');
+      console.log('Google register clicked - redirecting to /api/auth/google');
+      try {
+        window.location.href = '/api/auth/google';
+      } catch (error) {
+        console.error('Error redirecting to Google OAuth:', error);
+        alert('Error: ' + error.message);
+      }
     });
     
     // Check for OAuth errors in URL
