@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#00ff88">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32x32.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/global.css">
+  
+  <title>Offline - GamifyFit</title>
+  
+  <style>
+    .offline-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-lg);
+      text-align: center;
+    }
+    
+    .offline-content {
+      max-width: 500px;
+    }
+    
+    .offline-icon {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto var(--spacing-xl);
+      background: var(--bg-secondary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    .offline-icon::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      opacity: 0.3;
+      animation: glow 2s ease-in-out infinite;
+    }
+    
+    .offline-icon i {
+      font-size: 3rem;
+      color: var(--accent-yellow);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .offline-content h1 {
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .offline-content h1 span {
+      color: var(--accent-yellow);
+    }
+    
+    .offline-content > p {
+      font-size: 1.1rem;
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    .offline-info {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+      text-align: left;
+    }
+    
+    .offline-info h3 {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+      font-size: 1rem;
+    }
+    
+    .offline-info h3 i {
+      color: var(--accent-green);
+    }
+    
+    .cached-pages {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-sm);
+    }
+    
+    .cached-pages li a {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      transition: all var(--transition-fast);
+    }
+    
+    .cached-pages li a:hover {
+      background: var(--bg-card);
+      color: var(--accent-green);
+    }
+    
+    .cached-pages li a i {
+      font-size: 0.85rem;
+      color: var(--accent-blue);
+    }
+    
+    .sync-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md);
+      background: rgba(255, 215, 0, 0.1);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-xl);
+      font-size: 0.9rem;
+      color: var(--accent-yellow);
+    }
+    
+    .sync-info i {
+      font-size: 1.25rem;
+    }
+    
+    .offline-actions {
+      display: flex;
+      gap: var(--spacing-md);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .connection-status {
+      margin-top: var(--spacing-xl);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      font-size: 0.9rem;
+    }
+    
+    .connection-status.offline {
+      background: rgba(255, 71, 87, 0.1);
+      color: var(--accent-red);
+    }
+    
+    .connection-status.online {
+      background: rgba(0, 255, 136, 0.1);
+      color: var(--accent-green);
+    }
+    
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      animation: blink 1.5s ease infinite;
+    }
+    
+    .offline .status-dot {
+      background: var(--accent-red);
+    }
+    
+    .online .status-dot {
+      background: var(--accent-green);
+    }
+    
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    
+    /* Decorative elements */
+    .offline-page::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 30% 70%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 70% 30%, rgba(0, 212, 255, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    @media (max-width: 480px) {
+      .cached-pages {
+        grid-template-columns: 1fr;
+      }
+      
+      .offline-actions {
+        flex-direction: column;
+      }
+      
+      .offline-actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-page">
+    <div class="offline-content">
+      <div class="offline-icon">
+        <i class="fas fa-wifi-slash"></i>
+      </div>
+      
+      <h1>You're <span>Offline</span></h1>
+      <p>Don't worry! You can still access some features while you're disconnected.</p>
+      
+      <div class="offline-info">
+        <h3>
+          <i class="fas fa-database"></i>
+          Available Offline
+        </h3>
+        <ul class="cached-pages">
+          <li><a href="/dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="/challenges.html"><i class="fas fa-bullseye"></i> Challenges</a></li>
+          <li><a href="/plan.html"><i class="fas fa-calendar"></i> Workout Plan</a></li>
+          <li><a href="/achievements.html"><i class="fas fa-medal"></i> Achievements</a></li>
+          <li><a href="/profile.html"><i class="fas fa-user"></i> Profile</a></li>
+          <li><a href="/progress.html"><i class="fas fa-chart-line"></i> Progress</a></li>
+        </ul>
+      </div>
+      
+      <div class="sync-info">
+        <i class="fas fa-sync-alt"></i>
+        <span>Your data will sync automatically when you're back online</span>
+      </div>
+      
+      <div class="offline-actions">
+        <button class="btn btn-primary" onclick="window.location.reload()">
+          <i class="fas fa-redo"></i>
+          Try Again
+        </button>
+        <a href="/dashboard.html" class="btn btn-secondary">
+          <i class="fas fa-home"></i>
+          Go to Dashboard
+        </a>
+      </div>
+      
+      <div id="connection-status" class="connection-status offline">
+        <span class="status-dot"></span>
+        <span id="status-text">Currently Offline</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Monitor connection status
+    function updateConnectionStatus() {
+      const statusEl = document.getElementById('connection-status');
+      const statusText = document.getElementById('status-text');
+      
+      if (navigator.onLine) {
+        statusEl.classList.remove('offline');
+        statusEl.classList.add('online');
+        statusText.textContent = 'Connection Restored!';
+        
+        // Auto-redirect after a short delay
+        setTimeout(() => {
+          const lastPage = sessionStorage.getItem('lastVisitedPage') || '/dashboard.html';
+          window.location.href = lastPage;
+        }, 1500);
+      } else {
+        statusEl.classList.remove('online');
+        statusEl.classList.add('offline');
+        statusText.textContent = 'Currently Offline';
+      }
+    }
+    
+    window.addEventListener('online', updateConnectionStatus);
+    window.addEventListener('offline', updateConnectionStatus);
+    
+    // Initial check
+    updateConnectionStatus();
+    
+    // Store last sync time
+    const lastSync = localStorage.getItem('lastSyncTime');
+    if (lastSync) {
+      const syncDate = new Date(parseInt(lastSync));
+      const syncInfo = document.querySelector('.sync-info span');
+      syncInfo.textContent = `Last synced: ${syncDate.toLocaleString()}. Data will sync when online.`;
+    }
+  </script>
+</body>
+</html>

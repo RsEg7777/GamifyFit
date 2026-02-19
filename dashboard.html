@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#00ff88">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32x32.png">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192x192.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/global.css">
+  
+  <title>Dashboard - GamifyFit</title>
+  
+  <style>
+    .dashboard-page {
+      padding-top: 90px;
+      padding-bottom: var(--spacing-3xl);
+    }
+    
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--spacing-xl);
+      flex-wrap: wrap;
+      gap: var(--spacing-lg);
+    }
+    
+    .user-welcome {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    
+    .user-avatar-large {
+      width: 64px;
+      height: 64px;
+      background: var(--gradient-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--bg-primary);
+      position: relative;
+    }
+    
+    .level-badge {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      width: 28px;
+      height: 28px;
+      background: var(--bg-secondary);
+      border: 2px solid var(--accent-green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+    
+    .user-info h1 {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+    
+    .user-title {
+      color: var(--accent-green);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+    
+    /* XP Progress Section */
+    .xp-section {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+      border: 1px solid var(--border-color);
+    }
+    
+    .xp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .xp-level {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    
+    .xp-level-number {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 700;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .xp-level-title {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    .xp-stats {
+      text-align: right;
+    }
+    
+    .xp-current {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    
+    .xp-next {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    
+    .xp-bar-large {
+      height: 16px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .xp-bar-fill-large {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-full);
+      transition: width 1s ease-out;
+      position: relative;
+    }
+    
+    .xp-bar-fill-large::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: xp-shine 2s infinite;
+    }
+    
+    /* Main Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--spacing-lg);
+    }
+    
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+    }
+    
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+    }
+    
+    /* Daily Challenge Card */
+    .daily-challenge {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .daily-challenge::before {
+      content: 'TODAY\'S CHALLENGE';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      background: var(--gradient-primary);
+      color: var(--bg-primary);
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+    }
+    
+    .challenge-content {
+      padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-lg);
+    }
+    
+    .challenge-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .challenge-title {
+      font-size: 1.35rem;
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    .challenge-category {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    
+    .challenge-xp-badge {
+      background: rgba(0, 255, 136, 0.15);
+      color: var(--accent-green);
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    
+    .challenge-description {
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-lg);
+      font-size: 0.95rem;
+    }
+    
+    .challenge-meta {
+      display: flex;
+      gap: var(--spacing-xl);
+      margin-bottom: var(--spacing-lg);
+      flex-wrap: wrap;
+    }
+    
+    .challenge-meta-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    .challenge-meta-item i {
+      color: var(--accent-blue);
+    }
+    
+    .challenge-meta-item span {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    .challenge-progress {
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .challenge-progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-sm);
+      font-size: 0.85rem;
+    }
+    
+    .challenge-progress-bar {
+      height: 10px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    
+    .challenge-progress-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-full);
+      transition: width 0.5s ease;
+    }
+    
+    .challenge-actions {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+    
+    .challenge-actions .btn {
+      flex: 1;
+    }
+    
+    /* Activity Rings */
+    .activity-section {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-lg);
+      border: 1px solid var(--border-color);
+    }
+    
+    .activity-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .activity-header h3 {
+      font-size: 1.1rem;
+    }
+    
+    .activity-rings {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .activity-ring {
+      text-align: center;
+    }
+    
+    .ring-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .ring-container svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+    
+    .ring-bg {
+      fill: none;
+      stroke: var(--bg-tertiary);
+      stroke-width: 8;
+    }
+    
+    .ring-progress {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s ease;
+    }
+    
+    .ring-progress.steps { stroke: var(--accent-green); }
+    .ring-progress.calories { stroke: var(--accent-orange); }
+    .ring-progress.active { stroke: var(--accent-blue); }
+    
+    .ring-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    
+    .ring-value {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    
+    .ring-value.steps { color: var(--accent-green); }
+    .ring-value.calories { color: var(--accent-orange); }
+    .ring-value.active { color: var(--accent-blue); }
+    
+    .ring-unit {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+    
+    .ring-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    
+    .activity-goal {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    /* Quick Stats */
+    .quick-stats {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-lg);
+      border: 1px solid var(--border-color);
+    }
+    
+    .quick-stats h3 {
+      margin-bottom: var(--spacing-lg);
+      font-size: 1.1rem;
+    }
+    
+    .quick-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-md);
+    }
+    
+    .quick-stat-item {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      text-align: center;
+    }
+    
+    .quick-stat-icon {
+      width: 36px;
+      height: 36px;
+      margin: 0 auto var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .quick-stat-icon.streak { background: rgba(255, 107, 53, 0.2); color: var(--accent-orange); }
+    .quick-stat-icon.challenges { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); }
+    .quick-stat-icon.badges { background: rgba(255, 215, 0, 0.2); color: var(--accent-yellow); }
+    .quick-stat-icon.workouts { background: rgba(0, 212, 255, 0.2); color: var(--accent-blue); }
+    
+    .quick-stat-value {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    
+    .quick-stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    /* Streak Display */
+    .streak-card {
+      background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(255, 215, 0, 0.1));
+      border: 1px solid rgba(255, 107, 53, 0.3);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    
+    .streak-fire {
+      font-size: 2.5rem;
+      animation: streak-pulse 1.5s ease-in-out infinite;
+    }
+    
+    .streak-info h4 {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+    
+    .streak-number {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-orange);
+    }
+    
+    .streak-number span {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+    
+    /* Upcoming Challenges */
+    .upcoming-section {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-lg);
+      border: 1px solid var(--border-color);
+    }
+    
+    .section-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .section-header-row h3 {
+      font-size: 1.1rem;
+    }
+    
+    .upcoming-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+    
+    .upcoming-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    
+    .upcoming-item:hover {
+      background: var(--bg-card);
+    }
+    
+    .upcoming-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .upcoming-icon.cardio { background: rgba(0, 255, 136, 0.2); color: var(--accent-green); }
+    .upcoming-icon.strength { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); }
+    .upcoming-icon.flexibility { background: rgba(255, 107, 203, 0.2); color: var(--accent-pink); }
+    
+    .upcoming-info {
+      flex: 1;
+    }
+    
+    .upcoming-info h4 {
+      font-size: 0.95rem;
+      margin-bottom: 2px;
+    }
+    
+    .upcoming-info span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    
+    .upcoming-xp {
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+    
+    /* Install Banner */
+    .install-prompt {
+      background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+      border: 1px solid var(--border-glow);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    
+    .install-prompt-icon {
+      width: 50px;
+      height: 50px;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--bg-primary);
+    }
+    
+    .install-prompt-content {
+      flex: 1;
+    }
+    
+    .install-prompt-content h4 {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+    
+    .install-prompt-content p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    
+    /* Bottom Navigation */
+    .bottom-nav {
+      display: none;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .sidebar {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .dashboard-page {
+        padding-top: 80px;
+      }
+      
+      .dashboard-header {
+        flex-direction: column;
+      }
+      
+      .header-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+      
+      .sidebar {
+        grid-template-columns: 1fr;
+      }
+      
+      .activity-rings {
+        flex-wrap: wrap;
+      }
+      
+      .bottom-nav {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="navbar-brand">
+        <i class="fas fa-fire-flame-curved" style="color: var(--accent-green);"></i>
+        <span>GamifyFit</span>
+      </a>
+      
+      <ul class="navbar-menu">
+        <li><a href="/dashboard.html" class="navbar-link active">Dashboard</a></li>
+        <li><a href="/challenges.html" class="navbar-link">Challenges</a></li>
+        <li><a href="/plan.html" class="navbar-link">Plan</a></li>
+        <li><a href="/progress.html" class="navbar-link">Progress</a></li>
+        <li><a href="/leaderboard.html" class="navbar-link">Leaderboard</a></li>
+      </ul>
+      
+      <div class="navbar-actions">
+        <button class="btn btn-icon btn-ghost" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+        </button>
+        <a href="/profile.html" class="avatar avatar-sm">JD</a>
+      </div>
+      
+      <button class="navbar-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="dashboard-page">
+    <div class="container">
+      <!-- Dashboard Header -->
+      <div class="dashboard-header">
+        <div class="user-welcome">
+          <div class="user-avatar-large">
+            JD
+            <span class="level-badge">12</span>
+          </div>
+          <div class="user-info">
+            <h1>Welcome back, <span id="user-name">John</span>!</h1>
+            <p class="user-title">🏆 Level 12 — Hero</p>
+          </div>
+        </div>
+        
+        <div class="header-actions">
+          <button class="btn btn-secondary btn-sm" data-pwa-install style="display: none;">
+            <i class="fas fa-download"></i>
+            Install App
+          </button>
+          <button class="btn btn-primary btn-sm" onclick="location.href='/challenges.html'">
+            <i class="fas fa-plus"></i>
+            New Challenge
+          </button>
+        </div>
+      </div>
+      
+      <!-- XP Progress Section -->
+      <div class="xp-section">
+        <div class="xp-header">
+          <div class="xp-level">
+            <span class="xp-level-number">Lv. 12</span>
+            <div>
+              <div class="xp-level-title">Hero</div>
+            </div>
+          </div>
+          <div class="xp-stats">
+            <div class="xp-current"><span id="current-xp">5,650</span> XP</div>
+            <div class="xp-next"><span id="xp-needed">550</span> XP to Level 13</div>
+          </div>
+        </div>
+        <div class="xp-bar-large">
+          <div class="xp-bar-fill-large" id="xp-fill" style="width: 72%;"></div>
+        </div>
+      </div>
+      
+      <!-- Main Dashboard Grid -->
+      <div class="dashboard-grid">
+        <div class="main-content">
+          <!-- Daily Challenge -->
+          <div class="daily-challenge">
+            <div class="challenge-content">
+              <div class="challenge-header">
+                <div>
+                  <h2 class="challenge-title">🏃 10K Steps Challenge</h2>
+                  <span class="challenge-category">
+                    <i class="fas fa-heart-pulse"></i>
+                    Cardio • Intermediate
+                  </span>
+                </div>
+                <div class="challenge-xp-badge">+75 XP</div>
+              </div>
+              
+              <p class="challenge-description">
+                Walk 10,000 steps today. Track your steps throughout the day. Take stairs, walk during lunch, park farther away.
+              </p>
+              
+              <div class="challenge-meta">
+                <div class="challenge-meta-item">
+                  <i class="fas fa-bullseye"></i>
+                  <span>10,000 steps</span>
+                </div>
+                <div class="challenge-meta-item">
+                  <i class="fas fa-clock"></i>
+                  <span>Ends in 8h 32m</span>
+                </div>
+                <div class="challenge-meta-item">
+                  <i class="fas fa-fire"></i>
+                  <span>~400 cal burn</span>
+                </div>
+              </div>
+              
+              <div class="challenge-progress">
+                <div class="challenge-progress-header">
+                  <span>Progress</span>
+                  <span id="challenge-progress-text">8,432 / 10,000 steps (84%)</span>
+                </div>
+                <div class="challenge-progress-bar">
+                  <div class="challenge-progress-fill" id="challenge-progress-fill" style="width: 84%;"></div>
+                </div>
+              </div>
+              
+              <div class="challenge-actions">
+                <button class="btn btn-secondary">
+                  <i class="fas fa-info-circle"></i>
+                  Details
+                </button>
+                <button class="btn btn-primary" id="complete-challenge-btn">
+                  <i class="fas fa-check"></i>
+                  Mark Complete
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Upcoming Challenges -->
+          <div class="upcoming-section">
+            <div class="section-header-row">
+              <h3>Upcoming Challenges</h3>
+              <a href="/challenges.html" class="btn btn-ghost btn-sm">View All</a>
+            </div>
+            
+            <div class="upcoming-list">
+              <div class="upcoming-item">
+                <div class="upcoming-icon strength">
+                  <i class="fas fa-dumbbell"></i>
+                </div>
+                <div class="upcoming-info">
+                  <h4>Push-Up Power</h4>
+                  <span>Strength • 50 reps</span>
+                </div>
+                <span class="upcoming-xp">+50 XP</span>
+              </div>
+              
+              <div class="upcoming-item">
+                <div class="upcoming-icon cardio">
+                  <i class="fas fa-person-running"></i>
+                </div>
+                <div class="upcoming-info">
+                  <h4>HIIT Blast</h4>
+                  <span>Cardio • 20 minutes</span>
+                </div>
+                <span class="upcoming-xp">+100 XP</span>
+              </div>
+              
+              <div class="upcoming-item">
+                <div class="upcoming-icon flexibility">
+                  <i class="fas fa-spa"></i>
+                </div>
+                <div class="upcoming-info">
+                  <h4>Morning Stretch</h4>
+                  <span>Flexibility • 10 minutes</span>
+                </div>
+                <span class="upcoming-xp">+25 XP</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Install Prompt (shown if not installed) -->
+          <div class="install-prompt" id="install-prompt-card" style="display: none;">
+            <div class="install-prompt-icon">
+              <i class="fas fa-mobile-screen-button"></i>
+            </div>
+            <div class="install-prompt-content">
+              <h4>Install GamifyFit App</h4>
+              <p>Add to home screen for faster access and offline support</p>
+            </div>
+            <button class="btn btn-primary btn-sm" data-pwa-install>
+              <i class="fas fa-download"></i>
+              Install
+            </button>
+          </div>
+        </div>
+        
+        <div class="sidebar">
+          <!-- Activity Rings -->
+          <div class="activity-section">
+            <div class="activity-header">
+              <h3>Today's Activity</h3>
+              <button class="btn btn-ghost btn-sm">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+            </div>
+            
+            <div class="activity-rings">
+              <div class="activity-ring">
+                <div class="ring-container">
+                  <svg viewBox="0 0 100 100">
+                    <circle class="ring-bg" cx="50" cy="50" r="40"/>
+                    <circle class="ring-progress steps" cx="50" cy="50" r="40" 
+                      stroke-dasharray="251.2" 
+                      stroke-dashoffset="40" 
+                      id="steps-ring"/>
+                  </svg>
+                  <div class="ring-center">
+                    <div class="ring-value steps" id="steps-value">8,432</div>
+                    <div class="ring-unit">steps</div>
+                  </div>
+                </div>
+                <div class="ring-label">Steps</div>
+                <div class="activity-goal">Goal: 10,000</div>
+              </div>
+              
+              <div class="activity-ring">
+                <div class="ring-container">
+                  <svg viewBox="0 0 100 100">
+                    <circle class="ring-bg" cx="50" cy="50" r="40"/>
+                    <circle class="ring-progress calories" cx="50" cy="50" r="40" 
+                      stroke-dasharray="251.2" 
+                      stroke-dashoffset="100" 
+                      id="calories-ring"/>
+                  </svg>
+                  <div class="ring-center">
+                    <div class="ring-value calories" id="calories-value">486</div>
+                    <div class="ring-unit">kcal</div>
+                  </div>
+                </div>
+                <div class="ring-label">Calories</div>
+                <div class="activity-goal">Goal: 600</div>
+              </div>
+              
+              <div class="activity-ring">
+                <div class="ring-container">
+                  <svg viewBox="0 0 100 100">
+                    <circle class="ring-bg" cx="50" cy="50" r="40"/>
+                    <circle class="ring-progress active" cx="50" cy="50" r="40" 
+                      stroke-dasharray="251.2" 
+                      stroke-dashoffset="80" 
+                      id="active-ring"/>
+                  </svg>
+                  <div class="ring-center">
+                    <div class="ring-value active" id="active-value">42</div>
+                    <div class="ring-unit">min</div>
+                  </div>
+                </div>
+                <div class="ring-label">Active</div>
+                <div class="activity-goal">Goal: 60</div>
+              </div>
+            </div>
+            
+            <a href="/progress.html" class="btn btn-secondary" style="width: 100%;">
+              <i class="fas fa-chart-line"></i>
+              View Full Stats
+            </a>
+          </div>
+          
+          <!-- Streak Card -->
+          <div class="streak-card">
+            <div class="streak-fire">🔥</div>
+            <div class="streak-info">
+              <h4>Current Streak</h4>
+              <div class="streak-number">7 <span>days</span></div>
+            </div>
+          </div>
+          
+          <!-- Quick Stats -->
+          <div class="quick-stats">
+            <h3>Quick Stats</h3>
+            <div class="quick-stats-grid">
+              <div class="quick-stat-item">
+                <div class="quick-stat-icon streak">
+                  <i class="fas fa-fire"></i>
+                </div>
+                <div class="quick-stat-value">7</div>
+                <div class="quick-stat-label">Day Streak</div>
+              </div>
+              <div class="quick-stat-item">
+                <div class="quick-stat-icon challenges">
+                  <i class="fas fa-trophy"></i>
+                </div>
+                <div class="quick-stat-value">156</div>
+                <div class="quick-stat-label">Challenges</div>
+              </div>
+              <div class="quick-stat-item">
+                <div class="quick-stat-icon badges">
+                  <i class="fas fa-medal"></i>
+                </div>
+                <div class="quick-stat-value">12</div>
+                <div class="quick-stat-label">Badges</div>
+              </div>
+              <div class="quick-stat-item">
+                <div class="quick-stat-icon workouts">
+                  <i class="fas fa-dumbbell"></i>
+                </div>
+                <div class="quick-stat-value">89</div>
+                <div class="quick-stat-label">Workouts</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation (Mobile) -->
+  <nav class="bottom-nav">
+    <ul class="bottom-nav-items">
+      <li>
+        <a href="/dashboard.html" class="bottom-nav-link active">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </a>
+      </li>
+      <li>
+        <a href="/challenges.html" class="bottom-nav-link">
+          <i class="fas fa-bullseye"></i>
+          <span>Challenges</span>
+        </a>
+      </li>
+      <li>
+        <a href="/plan.html" class="bottom-nav-link">
+          <i class="fas fa-calendar-alt"></i>
+          <span>Plan</span>
+        </a>
+      </li>
+      <li>
+        <a href="/leaderboard.html" class="bottom-nav-link">
+          <i class="fas fa-ranking-star"></i>
+          <span>Ranks</span>
+        </a>
+      </li>
+      <li>
+        <a href="/profile.html" class="bottom-nav-link">
+          <i class="fas fa-user"></i>
+          <span>Profile</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Offline Banner -->
+  <div id="offline-banner" class="offline-indicator" style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 1000;">
+    <i class="fas fa-wifi-slash"></i>
+    <span>You're offline</span>
+  </div>
+
+  <script src="/js/pwa.js"></script>
+  <script>
+    // Load user data
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    if (userData.fullName) {
+      document.getElementById('user-name').textContent = userData.fullName.split(' ')[0];
+    }
+    
+    // Show install prompt card if app not installed
+    window.addEventListener('pwa:installable', () => {
+      document.getElementById('install-prompt-card').style.display = 'flex';
+    });
+    
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      document.getElementById('install-prompt-card').style.display = 'none';
+    }
+    
+    // Challenge completion
+    document.getElementById('complete-challenge-btn').addEventListener('click', async function() {
+      const btn = this;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Completing...';
+      
+      // Simulate API call
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fas fa-check"></i> Completed!';
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-secondary');
+        
+        // Show XP earned animation
+        showXPNotification(75);
+        
+        // Update progress to 100%
+        document.getElementById('challenge-progress-fill').style.width = '100%';
+        document.getElementById('challenge-progress-text').textContent = '10,000 / 10,000 steps (100%)';
+      }, 1500);
+    });
+    
+    // XP notification
+    function showXPNotification(xp) {
+      const notification = document.createElement('div');
+      notification.className = 'xp-notification';
+      notification.innerHTML = `<i class="fas fa-star"></i> +${xp} XP`;
+      notification.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--gradient-primary);
+        color: var(--bg-primary);
+        padding: 20px 40px;
+        border-radius: 16px;
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        font-weight: 700;
+        z-index: 10000;
+        animation: xpPop 0.5s ease, fadeOut 0.5s ease 1.5s forwards;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => notification.remove(), 2000);
+    }
+    
+    // Add animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes xpPop {
+        0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+        50% { transform: translate(-50%, -50%) scale(1.2); }
+        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      }
+      @keyframes fadeOut {
+        to { opacity: 0; transform: translate(-50%, -80%); }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Simulate activity ring updates (would come from Google Fit API)
+    function updateActivityRings() {
+      // In production, this would fetch from Google Fit API
+      const steps = 8432;
+      const stepsGoal = 10000;
+      const calories = 486;
+      const caloriesGoal = 600;
+      const active = 42;
+      const activeGoal = 60;
+      
+      const circumference = 2 * Math.PI * 40;
+      
+      const stepsOffset = circumference - (steps / stepsGoal) * circumference;
+      const caloriesOffset = circumference - (calories / caloriesGoal) * circumference;
+      const activeOffset = circumference - (active / activeGoal) * circumference;
+      
+      document.getElementById('steps-ring').style.strokeDashoffset = stepsOffset;
+      document.getElementById('calories-ring').style.strokeDashoffset = caloriesOffset;
+      document.getElementById('active-ring').style.strokeDashoffset = activeOffset;
+    }
+    
+    // Initialize
+    updateActivityRings();
+    
+    // Store current page for offline fallback
+    sessionStorage.setItem('lastVisitedPage', '/dashboard.html');
+    
+    // Sync timestamp
+    localStorage.setItem('lastSyncTime', Date.now().toString());
+  </script>
+</body>
+</html>

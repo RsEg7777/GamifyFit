@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#00ff88">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32x32.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/global.css">
+  
+  <title>Achievements - GamifyFit</title>
+  
+  <style>
+    .achievements-page {
+      min-height: 100vh;
+      padding-bottom: 100px;
+    }
+    
+    /* Header */
+    .achievements-header {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+      padding: var(--spacing-xl) var(--spacing-lg);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .page-title {
+      font-size: 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .page-title i {
+      color: var(--accent-yellow);
+    }
+    
+    /* Stats Row */
+    .stats-row {
+      display: flex;
+      gap: var(--spacing-xl);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    
+    .stat-icon.gold {
+      background: rgba(255, 215, 0, 0.15);
+      color: #ffd700;
+    }
+    
+    .stat-icon.green {
+      background: rgba(0, 255, 136, 0.15);
+      color: var(--accent-green);
+    }
+    
+    .stat-icon.purple {
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--accent-purple);
+    }
+    
+    .stat-value {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    /* Category Tabs */
+    .category-tabs {
+      display: flex;
+      gap: var(--spacing-xs);
+      overflow-x: auto;
+      padding-bottom: var(--spacing-sm);
+    }
+    
+    .category-tab {
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+    
+    .category-tab.active {
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+      background: rgba(0, 255, 136, 0.1);
+    }
+    
+    .category-tab:hover:not(.active) {
+      border-color: var(--text-muted);
+      color: var(--text-primary);
+    }
+    
+    .category-count {
+      background: var(--bg-tertiary);
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+    }
+    
+    .category-tab.active .category-count {
+      background: rgba(0, 255, 136, 0.3);
+    }
+    
+    /* Main Content */
+    .achievements-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--spacing-lg);
+    }
+    
+    /* Section */
+    .badge-section {
+      margin-bottom: var(--spacing-2xl);
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .section-title {
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    .section-title i {
+      color: var(--accent-green);
+    }
+    
+    .section-count {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    
+    /* Badge Grid */
+    .badge-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: var(--spacing-md);
+    }
+    
+    /* Badge Card */
+    .badge-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      padding: var(--spacing-lg);
+      text-align: center;
+      transition: all var(--transition-fast);
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .badge-card:hover {
+      border-color: var(--accent-green);
+      transform: translateY(-4px);
+    }
+    
+    .badge-card.locked {
+      opacity: 0.5;
+    }
+    
+    .badge-card.locked:hover {
+      opacity: 0.7;
+      border-color: var(--border-color);
+      transform: none;
+    }
+    
+    .badge-card.earned {
+      border-color: var(--accent-yellow);
+    }
+    
+    .badge-icon {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto var(--spacing-md);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      position: relative;
+    }
+    
+    .badge-card.earned .badge-icon {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 136, 0, 0.2) 100%);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    }
+    
+    .badge-card.locked .badge-icon {
+      background: var(--bg-tertiary);
+      filter: grayscale(100%);
+    }
+    
+    .badge-card:not(.earned):not(.locked) .badge-icon {
+      background: rgba(0, 255, 136, 0.1);
+    }
+    
+    .badge-tier {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+    }
+    
+    .badge-tier.bronze {
+      background: linear-gradient(135deg, #cd7f32 0%, #a05a20 100%);
+      color: #fff;
+    }
+    
+    .badge-tier.silver {
+      background: linear-gradient(135deg, #e0e0e0 0%, #a0a0a0 100%);
+      color: #333;
+    }
+    
+    .badge-tier.gold {
+      background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+      color: #333;
+    }
+    
+    .badge-tier.platinum {
+      background: linear-gradient(135deg, #e5e4e2 0%, #a8a8a8 100%);
+      color: #333;
+    }
+    
+    .badge-tier.diamond {
+      background: linear-gradient(135deg, #b9f2ff 0%, #7dd3e8 100%);
+      color: #333;
+    }
+    
+    .badge-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    .badge-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-sm);
+      line-height: 1.4;
+    }
+    
+    .badge-xp {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--accent-green);
+    }
+    
+    .badge-date {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: var(--spacing-xs);
+    }
+    
+    /* Progress Badge */
+    .badge-progress {
+      margin-top: var(--spacing-sm);
+    }
+    
+    .progress-bar {
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      transition: width 0.5s ease;
+    }
+    
+    .progress-text {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    
+    /* Lock Icon */
+    .lock-icon {
+      position: absolute;
+      top: var(--spacing-sm);
+      right: var(--spacing-sm);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+    
+    /* Featured Badge */
+    .featured-badge {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 136, 0, 0.1) 100%);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-2xl);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xl);
+    }
+    
+    .featured-icon {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 136, 0, 0.3) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+      flex-shrink: 0;
+    }
+    
+    .featured-content {
+      flex: 1;
+    }
+    
+    .featured-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-yellow);
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    .featured-name {
+      font-size: 1.5rem;
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    .featured-desc {
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .featured-progress {
+      max-width: 300px;
+    }
+    
+    .featured-progress .progress-bar {
+      height: 10px;
+    }
+    
+    .featured-xp {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-yellow);
+    }
+    
+    .featured-xp span {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      display: flex;
+      justify-content: space-around;
+      z-index: 100;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.7rem;
+      padding: var(--spacing-xs);
+      transition: color var(--transition-fast);
+    }
+    
+    .nav-item i {
+      font-size: 1.25rem;
+    }
+    
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--accent-green);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .stats-row {
+        flex-wrap: wrap;
+        gap: var(--spacing-md);
+      }
+      
+      .featured-badge {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .featured-progress {
+        margin: 0 auto;
+      }
+      
+      .badge-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="achievements-page">
+    <!-- Header -->
+    <header class="achievements-header">
+      <div class="header-content">
+        <h1 class="page-title">
+          <i class="fas fa-medal"></i>
+          Achievements
+        </h1>
+        
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="stat-icon gold">
+              <i class="fas fa-trophy"></i>
+            </div>
+            <div>
+              <div class="stat-value">12/45</div>
+              <div class="stat-label">Badges Earned</div>
+            </div>
+          </div>
+          
+          <div class="stat-item">
+            <div class="stat-icon green">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <div>
+              <div class="stat-value">1,850</div>
+              <div class="stat-label">XP from Badges</div>
+            </div>
+          </div>
+          
+          <div class="stat-item">
+            <div class="stat-icon purple">
+              <i class="fas fa-gem"></i>
+            </div>
+            <div>
+              <div class="stat-value">3</div>
+              <div class="stat-label">Rare Badges</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="category-tabs">
+          <button class="category-tab active" data-category="all">
+            All
+            <span class="category-count">45</span>
+          </button>
+          <button class="category-tab" data-category="fitness">
+            <i class="fas fa-dumbbell"></i>
+            Fitness
+            <span class="category-count">15</span>
+          </button>
+          <button class="category-tab" data-category="streaks">
+            <i class="fas fa-fire"></i>
+            Streaks
+            <span class="category-count">8</span>
+          </button>
+          <button class="category-tab" data-category="challenges">
+            <i class="fas fa-crosshairs"></i>
+            Challenges
+            <span class="category-count">10</span>
+          </button>
+          <button class="category-tab" data-category="social">
+            <i class="fas fa-users"></i>
+            Social
+            <span class="category-count">7</span>
+          </button>
+          <button class="category-tab" data-category="special">
+            <i class="fas fa-star"></i>
+            Special
+            <span class="category-count">5</span>
+          </button>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="achievements-content">
+      <!-- Featured Badge (Next to Unlock) -->
+      <div class="featured-badge">
+        <div class="featured-icon">🏆</div>
+        <div class="featured-content">
+          <div class="featured-label">Almost There!</div>
+          <h2 class="featured-name">Challenge Champion</h2>
+          <p class="featured-desc">Complete 25 challenges to earn this prestigious badge.</p>
+          <div class="featured-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 88%"></div>
+            </div>
+            <div class="progress-text">22/25 challenges completed</div>
+          </div>
+        </div>
+        <div class="featured-xp">
+          +300 <span>XP</span>
+        </div>
+      </div>
+      
+      <!-- Earned Badges -->
+      <section class="badge-section" id="earned-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-check-circle"></i>
+            Earned Badges
+          </h2>
+          <span class="section-count">12 badges</span>
+        </div>
+        
+        <div class="badge-grid" id="earned-grid">
+          <!-- Badges will be injected via JS -->
+        </div>
+      </section>
+      
+      <!-- In Progress -->
+      <section class="badge-section" id="progress-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-hourglass-half"></i>
+            In Progress
+          </h2>
+          <span class="section-count">8 badges</span>
+        </div>
+        
+        <div class="badge-grid" id="progress-grid">
+          <!-- Badges will be injected via JS -->
+        </div>
+      </section>
+      
+      <!-- Locked -->
+      <section class="badge-section" id="locked-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-lock"></i>
+            Locked
+          </h2>
+          <span class="section-count">25 badges</span>
+        </div>
+        
+        <div class="badge-grid" id="locked-grid">
+          <!-- Badges will be injected via JS -->
+        </div>
+      </section>
+    </main>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="/dashboard.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="/challenges.html" class="nav-item">
+        <i class="fas fa-crosshairs"></i>
+        <span>Challenges</span>
+      </a>
+      <a href="/achievements.html" class="nav-item active">
+        <i class="fas fa-medal"></i>
+        <span>Badges</span>
+      </a>
+      <a href="/leaderboard.html" class="nav-item">
+        <i class="fas fa-ranking-star"></i>
+        <span>Ranks</span>
+      </a>
+      <a href="/profile.html" class="nav-item">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="/js/pwa.js"></script>
+  <script>
+    // Sample badges data
+    const badges = {
+      earned: [
+        { id: 1, icon: '🚀', name: 'First Steps', desc: 'Complete your first workout', xp: 25, tier: 'bronze', date: 'Dec 15, 2023', category: 'fitness' },
+        { id: 2, icon: '🔥', name: 'On Fire', desc: '7-day workout streak', xp: 100, tier: 'silver', date: 'Dec 22, 2023', category: 'streaks' },
+        { id: 3, icon: '💪', name: 'Push-Up Pro', desc: 'Complete 500 push-ups', xp: 150, tier: 'gold', date: 'Jan 5, 2024', category: 'fitness' },
+        { id: 4, icon: '🎯', name: 'Goal Getter', desc: 'Complete 5 challenges', xp: 75, tier: 'bronze', date: 'Jan 8, 2024', category: 'challenges' },
+        { id: 5, icon: '👟', name: 'Step Master', desc: 'Walk 100,000 steps total', xp: 125, tier: 'silver', date: 'Jan 10, 2024', category: 'fitness' },
+        { id: 6, icon: '🌅', name: 'Early Bird', desc: 'Complete 10 morning workouts', xp: 100, tier: 'silver', date: 'Jan 12, 2024', category: 'fitness' },
+        { id: 7, icon: '⚡', name: 'Speed Demon', desc: 'Complete a workout under 20 min', xp: 50, tier: 'bronze', date: 'Jan 14, 2024', category: 'fitness' },
+        { id: 8, icon: '🏃', name: '5K Runner', desc: 'Run 5km in a single session', xp: 100, tier: 'silver', date: 'Jan 15, 2024', category: 'fitness' },
+        { id: 9, icon: '📅', name: 'Consistent', desc: 'Log activity for 14 days straight', xp: 150, tier: 'gold', date: 'Jan 16, 2024', category: 'streaks' },
+        { id: 10, icon: '🧘', name: 'Zen Master', desc: 'Complete 10 meditation sessions', xp: 75, tier: 'bronze', date: 'Jan 17, 2024', category: 'fitness' },
+        { id: 11, icon: '💧', name: 'Hydration Hero', desc: 'Log water intake for 7 days', xp: 50, tier: 'bronze', date: 'Jan 18, 2024', category: 'fitness' },
+        { id: 12, icon: '🎮', name: 'Level 10', desc: 'Reach level 10', xp: 200, tier: 'gold', date: 'Jan 19, 2024', category: 'special' }
+      ],
+      inProgress: [
+        { id: 13, icon: '🏆', name: 'Challenge Champion', desc: 'Complete 25 challenges', xp: 300, tier: 'platinum', progress: 88, current: 22, total: 25, category: 'challenges' },
+        { id: 14, icon: '🔥', name: 'Inferno', desc: '30-day workout streak', xp: 300, tier: 'gold', progress: 47, current: 14, total: 30, category: 'streaks' },
+        { id: 15, icon: '🏋️', name: 'Iron Pumper', desc: 'Lift 10,000kg total', xp: 200, tier: 'silver', progress: 65, current: 6500, total: 10000, category: 'fitness' },
+        { id: 16, icon: '🌟', name: 'Rising Star', desc: 'Earn 5,000 XP', xp: 250, tier: 'gold', progress: 49, current: 2450, total: 5000, category: 'special' },
+        { id: 17, icon: '👥', name: 'Social Butterfly', desc: 'Add 10 friends', xp: 100, tier: 'silver', progress: 30, current: 3, total: 10, category: 'social' },
+        { id: 18, icon: '🏃', name: '10K Runner', desc: 'Run 10km in a single session', xp: 150, tier: 'gold', progress: 78, current: 7.8, total: 10, category: 'fitness' },
+        { id: 19, icon: '📊', name: 'Data Driven', desc: 'Log 50 workouts', xp: 175, tier: 'silver', progress: 48, current: 24, total: 50, category: 'fitness' },
+        { id: 20, icon: '🎯', name: 'Sharpshooter', desc: 'Complete 10 daily challenges', xp: 125, tier: 'silver', progress: 70, current: 7, total: 10, category: 'challenges' }
+      ],
+      locked: [
+        { id: 21, icon: '💎', name: 'Diamond Elite', desc: 'Reach level 50', xp: 1000, tier: 'diamond', category: 'special' },
+        { id: 22, icon: '🌙', name: 'Night Owl', desc: 'Complete 20 evening workouts', xp: 125, tier: 'silver', category: 'fitness' },
+        { id: 23, icon: '🔥', name: 'Unstoppable', desc: '100-day streak', xp: 500, tier: 'diamond', category: 'streaks' },
+        { id: 24, icon: '🏅', name: 'Marathon Master', desc: 'Run a full marathon', xp: 400, tier: 'platinum', category: 'fitness' },
+        { id: 25, icon: '💪', name: 'Muscle Machine', desc: 'Complete 100 strength workouts', xp: 300, tier: 'gold', category: 'fitness' },
+        { id: 26, icon: '🎖️', name: 'Top 10', desc: 'Reach top 10 on leaderboard', xp: 350, tier: 'platinum', category: 'social' },
+        { id: 27, icon: '🌈', name: 'Well Rounded', desc: 'Complete all workout types', xp: 200, tier: 'gold', category: 'fitness' },
+        { id: 28, icon: '🏆', name: 'Grandmaster', desc: 'Complete all challenges', xp: 1000, tier: 'diamond', category: 'challenges' }
+      ]
+    };
+    
+    // Render badge card
+    function renderBadge(badge, status) {
+      const progressHtml = status === 'inProgress' ? `
+        <div class="badge-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${badge.progress}%"></div>
+          </div>
+          <div class="progress-text">${badge.current}/${badge.total}</div>
+        </div>
+      ` : '';
+      
+      const dateHtml = status === 'earned' ? `<div class="badge-date">Earned ${badge.date}</div>` : '';
+      const lockHtml = status === 'locked' ? '<div class="lock-icon"><i class="fas fa-lock"></i></div>' : '';
+      
+      return `
+        <div class="badge-card ${status === 'earned' ? 'earned' : ''} ${status === 'locked' ? 'locked' : ''}" 
+             data-category="${badge.category}" onclick="showBadgeDetails(${badge.id})">
+          ${lockHtml}
+          <div class="badge-icon">
+            ${badge.icon}
+            <div class="badge-tier ${badge.tier}">${badge.tier.charAt(0).toUpperCase()}</div>
+          </div>
+          <div class="badge-name">${badge.name}</div>
+          <div class="badge-desc">${badge.desc}</div>
+          <div class="badge-xp">+${badge.xp} XP</div>
+          ${dateHtml}
+          ${progressHtml}
+        </div>
+      `;
+    }
+    
+    // Render all badges
+    function renderBadges(category = 'all') {
+      const earnedGrid = document.getElementById('earned-grid');
+      const progressGrid = document.getElementById('progress-grid');
+      const lockedGrid = document.getElementById('locked-grid');
+      
+      const filterByCategory = (badge) => category === 'all' || badge.category === category;
+      
+      earnedGrid.innerHTML = badges.earned.filter(filterByCategory).map(b => renderBadge(b, 'earned')).join('');
+      progressGrid.innerHTML = badges.inProgress.filter(filterByCategory).map(b => renderBadge(b, 'inProgress')).join('');
+      lockedGrid.innerHTML = badges.locked.filter(filterByCategory).map(b => renderBadge(b, 'locked')).join('');
+      
+      // Update section counts
+      document.querySelector('#earned-section .section-count').textContent = 
+        `${badges.earned.filter(filterByCategory).length} badges`;
+      document.querySelector('#progress-section .section-count').textContent = 
+        `${badges.inProgress.filter(filterByCategory).length} badges`;
+      document.querySelector('#locked-section .section-count').textContent = 
+        `${badges.locked.filter(filterByCategory).length} badges`;
+      
+      // Hide empty sections
+      document.getElementById('earned-section').style.display = 
+        badges.earned.filter(filterByCategory).length ? 'block' : 'none';
+      document.getElementById('progress-section').style.display = 
+        badges.inProgress.filter(filterByCategory).length ? 'block' : 'none';
+      document.getElementById('locked-section').style.display = 
+        badges.locked.filter(filterByCategory).length ? 'block' : 'none';
+    }
+    
+    // Show badge details
+    function showBadgeDetails(id) {
+      const allBadges = [...badges.earned, ...badges.inProgress, ...badges.locked];
+      const badge = allBadges.find(b => b.id === id);
+      if (badge) {
+        alert(`${badge.icon} ${badge.name}\n\n${badge.desc}\n\nReward: +${badge.xp} XP\nTier: ${badge.tier.charAt(0).toUpperCase() + badge.tier.slice(1)}`);
+      }
+    }
+    
+    // Category tabs
+    document.querySelectorAll('.category-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        renderBadges(tab.dataset.category);
+      });
+    });
+    
+    // Initial render
+    renderBadges();
+  </script>
+</body>
+</html>

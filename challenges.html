@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#00ff88">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32x32.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/global.css">
+  
+  <title>Challenges - GamifyFit</title>
+  
+  <style>
+    .challenges-page {
+      min-height: 100vh;
+      padding-bottom: 100px;
+    }
+    
+    /* Header */
+    .challenges-header {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+      padding: var(--spacing-xl) var(--spacing-lg);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .page-title {
+      font-size: 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    .page-title i {
+      color: var(--accent-green);
+    }
+    
+    .active-challenges {
+      background: rgba(0, 255, 136, 0.1);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      border: 1px solid rgba(0, 255, 136, 0.3);
+    }
+    
+    .active-challenges span {
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+    
+    /* Type Tabs */
+    .type-tabs {
+      display: flex;
+      gap: var(--spacing-sm);
+      background: var(--bg-primary);
+      padding: var(--spacing-xs);
+      border-radius: var(--radius-md);
+      width: fit-content;
+    }
+    
+    .type-tab {
+      padding: var(--spacing-sm) var(--spacing-lg);
+      background: transparent;
+      border: none;
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+    
+    .type-tab.active {
+      background: var(--gradient-primary);
+      color: var(--bg-primary);
+    }
+    
+    .type-tab:hover:not(.active) {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+    
+    .tab-badge {
+      background: var(--bg-tertiary);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+    }
+    
+    .type-tab.active .tab-badge {
+      background: rgba(0, 0, 0, 0.2);
+      color: var(--bg-primary);
+    }
+    
+    /* Main Content */
+    .challenges-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--spacing-lg);
+    }
+    
+    /* Filters */
+    .filters-bar {
+      display: flex;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-xl);
+      flex-wrap: wrap;
+    }
+    
+    .filter-group {
+      display: flex;
+      gap: var(--spacing-xs);
+      flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+      padding: var(--spacing-xs) var(--spacing-md);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+    
+    .filter-btn:hover {
+      border-color: var(--accent-green);
+      color: var(--text-primary);
+    }
+    
+    .filter-btn.active {
+      background: rgba(0, 255, 136, 0.15);
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+    }
+    
+    .filter-btn i {
+      font-size: 0.75rem;
+    }
+    
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      max-width: 300px;
+      position: relative;
+    }
+    
+    .search-box input {
+      width: 100%;
+      padding: var(--spacing-sm) var(--spacing-md);
+      padding-left: 36px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+    }
+    
+    .search-box input:focus {
+      border-color: var(--accent-green);
+      outline: none;
+    }
+    
+    .search-box i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+    
+    /* Challenge Grid */
+    .challenges-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--spacing-lg);
+    }
+    
+    /* Challenge Card */
+    .challenge-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      transition: all var(--transition-fast);
+    }
+    
+    .challenge-card:hover {
+      border-color: var(--accent-green);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 255, 136, 0.15);
+    }
+    
+    .challenge-card.joined {
+      border-color: var(--accent-blue);
+    }
+    
+    .challenge-card.completed {
+      border-color: var(--accent-green);
+      opacity: 0.8;
+    }
+    
+    .card-header {
+      padding: var(--spacing-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .challenge-type {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+    }
+    
+    .challenge-type.daily {
+      background: rgba(0, 212, 255, 0.15);
+      color: var(--accent-blue);
+    }
+    
+    .challenge-type.weekly {
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--accent-purple);
+    }
+    
+    .challenge-type.monthly {
+      background: rgba(255, 193, 7, 0.15);
+      color: var(--accent-yellow);
+    }
+    
+    .challenge-type.special {
+      background: rgba(255, 71, 87, 0.15);
+      color: var(--accent-red);
+    }
+    
+    .challenge-xp {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+    
+    .challenge-xp i {
+      font-size: 0.8rem;
+    }
+    
+    .card-body {
+      padding: var(--spacing-lg);
+    }
+    
+    .challenge-category {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .challenge-category i {
+      width: 20px;
+    }
+    
+    .challenge-title {
+      font-size: 1.1rem;
+      margin-bottom: var(--spacing-sm);
+      line-height: 1.3;
+    }
+    
+    .challenge-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-md);
+      line-height: 1.5;
+    }
+    
+    .challenge-target {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .challenge-target i {
+      color: var(--accent-green);
+    }
+    
+    .challenge-target span {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    
+    /* Progress Bar */
+    .challenge-progress {
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    .progress-header span:first-child {
+      color: var(--text-secondary);
+    }
+    
+    .progress-header span:last-child {
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+    
+    .progress-bar {
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-full);
+      transition: width 0.5s ease;
+    }
+    
+    /* Card Footer */
+    .card-footer {
+      padding: var(--spacing-md);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .time-remaining {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    
+    .time-remaining.urgent {
+      color: var(--accent-red);
+    }
+    
+    .participants {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    
+    .btn-join {
+      padding: var(--spacing-sm) var(--spacing-lg);
+      font-size: 0.85rem;
+    }
+    
+    .btn-joined {
+      background: var(--bg-tertiary);
+      color: var(--accent-blue);
+      border: 1px solid var(--accent-blue);
+    }
+    
+    .btn-completed {
+      background: rgba(0, 255, 136, 0.15);
+      color: var(--accent-green);
+      border: 1px solid var(--accent-green);
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: var(--spacing-3xl);
+    }
+    
+    .empty-state i {
+      font-size: 4rem;
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .empty-state h3 {
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .empty-state p {
+      color: var(--text-secondary);
+    }
+    
+    /* Featured Challenge */
+    .featured-section {
+      margin-bottom: var(--spacing-2xl);
+    }
+    
+    .section-title {
+      font-size: 1.1rem;
+      margin-bottom: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    .section-title i {
+      color: var(--accent-yellow);
+    }
+    
+    .featured-card {
+      background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 71, 87, 0.1) 100%);
+      border: 1px solid rgba(255, 193, 7, 0.3);
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-lg);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--spacing-xl);
+      align-items: center;
+    }
+    
+    .featured-content h2 {
+      font-size: 1.5rem;
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .featured-content p {
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .featured-stats {
+      display: flex;
+      gap: var(--spacing-xl);
+    }
+    
+    .featured-stat {
+      text-align: center;
+    }
+    
+    .featured-stat-value {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-yellow);
+    }
+    
+    .featured-stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    
+    .featured-action {
+      text-align: center;
+    }
+    
+    .featured-xp {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent-yellow);
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .featured-xp span {
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+    
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      display: flex;
+      justify-content: space-around;
+      z-index: 100;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.7rem;
+      padding: var(--spacing-xs);
+      transition: color var(--transition-fast);
+    }
+    
+    .nav-item i {
+      font-size: 1.25rem;
+    }
+    
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--accent-green);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-top {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: flex-start;
+      }
+      
+      .type-tabs {
+        width: 100%;
+        overflow-x: auto;
+      }
+      
+      .filters-bar {
+        flex-direction: column;
+      }
+      
+      .search-box {
+        max-width: 100%;
+      }
+      
+      .featured-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      
+      .featured-stats {
+        justify-content: center;
+      }
+      
+      .challenges-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="challenges-page">
+    <!-- Header -->
+    <header class="challenges-header">
+      <div class="header-content">
+        <div class="header-top">
+          <h1 class="page-title">
+            <i class="fas fa-crosshairs"></i>
+            Challenges
+          </h1>
+          <div class="active-challenges">
+            <i class="fas fa-bolt"></i>
+            <span id="active-count">3</span> Active Challenges
+          </div>
+        </div>
+        
+        <div class="type-tabs">
+          <button class="type-tab active" data-type="all">
+            All
+            <span class="tab-badge" id="all-count">17</span>
+          </button>
+          <button class="type-tab" data-type="daily">
+            <i class="fas fa-sun"></i>
+            Daily
+            <span class="tab-badge" id="daily-count">5</span>
+          </button>
+          <button class="type-tab" data-type="weekly">
+            <i class="fas fa-calendar-week"></i>
+            Weekly
+            <span class="tab-badge" id="weekly-count">8</span>
+          </button>
+          <button class="type-tab" data-type="monthly">
+            <i class="fas fa-calendar-alt"></i>
+            Monthly
+            <span class="tab-badge" id="monthly-count">3</span>
+          </button>
+          <button class="type-tab" data-type="special">
+            <i class="fas fa-star"></i>
+            Special
+            <span class="tab-badge" id="special-count">1</span>
+          </button>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="challenges-content">
+      <!-- Filters -->
+      <div class="filters-bar">
+        <div class="filter-group">
+          <button class="filter-btn active" data-category="all">
+            <i class="fas fa-layer-group"></i>
+            All Categories
+          </button>
+          <button class="filter-btn" data-category="cardio">
+            <i class="fas fa-heartbeat"></i>
+            Cardio
+          </button>
+          <button class="filter-btn" data-category="strength">
+            <i class="fas fa-dumbbell"></i>
+            Strength
+          </button>
+          <button class="filter-btn" data-category="flexibility">
+            <i class="fas fa-child-reaching"></i>
+            Flexibility
+          </button>
+          <button class="filter-btn" data-category="mindfulness">
+            <i class="fas fa-brain"></i>
+            Mindfulness
+          </button>
+          <button class="filter-btn" data-category="nutrition">
+            <i class="fas fa-apple-whole"></i>
+            Nutrition
+          </button>
+        </div>
+        
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="search-input" placeholder="Search challenges...">
+        </div>
+      </div>
+      
+      <!-- Featured Challenge -->
+      <section class="featured-section" id="featured-section">
+        <h2 class="section-title">
+          <i class="fas fa-crown"></i>
+          Featured Challenge
+        </h2>
+        
+        <div class="featured-card">
+          <div class="featured-content">
+            <span class="challenge-type special">🔥 Limited Time</span>
+            <h2>New Year Transformation</h2>
+            <p>Complete 30 workouts in January. Push your limits and start the year strong!</p>
+            
+            <div class="featured-stats">
+              <div class="featured-stat">
+                <div class="featured-stat-value">2,547</div>
+                <div class="featured-stat-label">Participants</div>
+              </div>
+              <div class="featured-stat">
+                <div class="featured-stat-value">15</div>
+                <div class="featured-stat-label">Days Left</div>
+              </div>
+              <div class="featured-stat">
+                <div class="featured-stat-value">30</div>
+                <div class="featured-stat-label">Workouts</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="featured-action">
+            <div class="featured-xp">+2000 <span>XP</span></div>
+            <button class="btn btn-primary btn-join" onclick="joinChallenge('special-1')">
+              <i class="fas fa-rocket"></i>
+              Join Challenge
+            </button>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Challenge Grid -->
+      <div class="challenges-grid" id="challenges-grid">
+        <!-- Cards will be injected via JS -->
+      </div>
+      
+      <!-- Empty State -->
+      <div class="empty-state" id="empty-state" style="display: none;">
+        <i class="fas fa-search"></i>
+        <h3>No Challenges Found</h3>
+        <p>Try adjusting your filters or search terms</p>
+      </div>
+    </main>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="/dashboard.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="/challenges.html" class="nav-item active">
+        <i class="fas fa-crosshairs"></i>
+        <span>Challenges</span>
+      </a>
+      <a href="/plan.html" class="nav-item">
+        <i class="fas fa-calendar-check"></i>
+        <span>Plan</span>
+      </a>
+      <a href="/progress.html" class="nav-item">
+        <i class="fas fa-chart-line"></i>
+        <span>Progress</span>
+      </a>
+      <a href="/profile.html" class="nav-item">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="/js/pwa.js"></script>
+  <script>
+    // Sample challenges data
+    const challenges = [
+      {
+        id: 'daily-1',
+        type: 'daily',
+        category: 'cardio',
+        title: '10K Steps Challenge',
+        description: 'Walk 10,000 steps today to boost your cardiovascular health.',
+        target: { value: 10000, unit: 'steps', current: 6500 },
+        xp: 50,
+        participants: 1234,
+        timeRemaining: '8h left',
+        joined: true
+      },
+      {
+        id: 'daily-2',
+        type: 'daily',
+        category: 'strength',
+        title: 'Push-Up Power',
+        description: 'Complete 50 push-ups throughout the day. Break it into sets!',
+        target: { value: 50, unit: 'push-ups', current: 30 },
+        xp: 40,
+        participants: 856,
+        timeRemaining: '8h left',
+        joined: true
+      },
+      {
+        id: 'daily-3',
+        type: 'daily',
+        category: 'mindfulness',
+        title: 'Morning Meditation',
+        description: 'Start your day with a 10-minute mindfulness session.',
+        target: { value: 10, unit: 'minutes', current: 0 },
+        xp: 30,
+        participants: 567,
+        timeRemaining: '8h left',
+        joined: false
+      },
+      {
+        id: 'daily-4',
+        type: 'daily',
+        category: 'nutrition',
+        title: 'Hydration Hero',
+        description: 'Drink 8 glasses of water today to stay properly hydrated.',
+        target: { value: 8, unit: 'glasses', current: 5 },
+        xp: 25,
+        participants: 2103,
+        timeRemaining: '8h left',
+        joined: true
+      },
+      {
+        id: 'daily-5',
+        type: 'daily',
+        category: 'flexibility',
+        title: 'Stretch Session',
+        description: 'Complete a 15-minute stretching routine.',
+        target: { value: 15, unit: 'minutes', current: 0 },
+        xp: 35,
+        participants: 432,
+        timeRemaining: '8h left',
+        joined: false
+      },
+      {
+        id: 'weekly-1',
+        type: 'weekly',
+        category: 'cardio',
+        title: 'Marathon Prep',
+        description: 'Run a total of 50km this week. Track with Google Fit!',
+        target: { value: 50, unit: 'km', current: 23 },
+        xp: 200,
+        participants: 654,
+        timeRemaining: '4 days left',
+        joined: true
+      },
+      {
+        id: 'weekly-2',
+        type: 'weekly',
+        category: 'strength',
+        title: 'Core Crusher',
+        description: 'Complete 500 ab exercises this week (sit-ups, crunches, planks).',
+        target: { value: 500, unit: 'reps', current: 280 },
+        xp: 175,
+        participants: 423,
+        timeRemaining: '4 days left',
+        joined: false
+      },
+      {
+        id: 'weekly-3',
+        type: 'weekly',
+        category: 'cardio',
+        title: 'Cycling Champion',
+        description: 'Bike 100km total this week on outdoor or stationary bike.',
+        target: { value: 100, unit: 'km', current: 45 },
+        xp: 225,
+        participants: 312,
+        timeRemaining: '4 days left',
+        joined: false
+      },
+      {
+        id: 'weekly-4',
+        type: 'weekly',
+        category: 'hybrid',
+        title: 'HIIT Master',
+        description: 'Complete 5 HIIT workout sessions this week.',
+        target: { value: 5, unit: 'sessions', current: 2 },
+        xp: 150,
+        participants: 567,
+        timeRemaining: '4 days left',
+        joined: true
+      },
+      {
+        id: 'weekly-5',
+        type: 'weekly',
+        category: 'nutrition',
+        title: 'Clean Eating Week',
+        description: 'Log healthy meals for 7 consecutive days.',
+        target: { value: 7, unit: 'days', current: 3 },
+        xp: 180,
+        participants: 890,
+        timeRemaining: '4 days left',
+        joined: false
+      },
+      {
+        id: 'weekly-6',
+        type: 'weekly',
+        category: 'mindfulness',
+        title: 'Sleep Champion',
+        description: 'Get 7+ hours of sleep for 5 nights this week.',
+        target: { value: 5, unit: 'nights', current: 2 },
+        xp: 125,
+        participants: 1234,
+        timeRemaining: '4 days left',
+        joined: false
+      },
+      {
+        id: 'weekly-7',
+        type: 'weekly',
+        category: 'flexibility',
+        title: 'Yoga Journey',
+        description: 'Complete 3 yoga sessions of at least 30 minutes each.',
+        target: { value: 3, unit: 'sessions', current: 1 },
+        xp: 140,
+        participants: 678,
+        timeRemaining: '4 days left',
+        joined: false
+      },
+      {
+        id: 'weekly-8',
+        type: 'weekly',
+        category: 'strength',
+        title: 'Upper Body Blitz',
+        description: 'Complete 4 upper body workout sessions this week.',
+        target: { value: 4, unit: 'sessions', current: 0 },
+        xp: 160,
+        participants: 445,
+        timeRemaining: '4 days left',
+        joined: false
+      },
+      {
+        id: 'monthly-1',
+        type: 'monthly',
+        category: 'cardio',
+        title: '200km Running Club',
+        description: 'Run a total of 200km this month. Average 6.5km per day!',
+        target: { value: 200, unit: 'km', current: 87 },
+        xp: 500,
+        participants: 234,
+        timeRemaining: '18 days left',
+        joined: true
+      },
+      {
+        id: 'monthly-2',
+        type: 'monthly',
+        category: 'strength',
+        title: 'Muscle Builder',
+        description: 'Complete 20 strength training sessions this month.',
+        target: { value: 20, unit: 'sessions', current: 8 },
+        xp: 450,
+        participants: 345,
+        timeRemaining: '18 days left',
+        joined: false
+      },
+      {
+        id: 'monthly-3',
+        type: 'monthly',
+        category: 'nutrition',
+        title: 'Calorie Counter',
+        description: 'Stay within your calorie goal for 25 days this month.',
+        target: { value: 25, unit: 'days', current: 12 },
+        xp: 400,
+        participants: 567,
+        timeRemaining: '18 days left',
+        joined: false
+      }
+    ];
+    
+    // State
+    let currentType = 'all';
+    let currentCategory = 'all';
+    let searchQuery = '';
+    
+    // Category icons
+    const categoryIcons = {
+      cardio: 'fa-heartbeat',
+      strength: 'fa-dumbbell',
+      flexibility: 'fa-child-reaching',
+      mindfulness: 'fa-brain',
+      nutrition: 'fa-apple-whole',
+      hybrid: 'fa-layer-group'
+    };
+    
+    // Render challenges
+    function renderChallenges() {
+      const grid = document.getElementById('challenges-grid');
+      const emptyState = document.getElementById('empty-state');
+      
+      // Filter challenges
+      let filtered = challenges.filter(c => {
+        const matchesType = currentType === 'all' || c.type === currentType;
+        const matchesCategory = currentCategory === 'all' || c.category === currentCategory;
+        const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            c.description.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesType && matchesCategory && matchesSearch;
+      });
+      
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      grid.innerHTML = filtered.map(challenge => {
+        const progress = Math.round((challenge.target.current / challenge.target.value) * 100);
+        const isCompleted = progress >= 100;
+        const isUrgent = challenge.timeRemaining.includes('h') && parseInt(challenge.timeRemaining) < 4;
+        
+        return `
+          <div class="challenge-card ${challenge.joined ? 'joined' : ''} ${isCompleted ? 'completed' : ''}">
+            <div class="card-header">
+              <span class="challenge-type ${challenge.type}">${challenge.type}</span>
+              <div class="challenge-xp">
+                <i class="fas fa-bolt"></i>
+                +${challenge.xp} XP
+              </div>
+            </div>
+            
+            <div class="card-body">
+              <div class="challenge-category">
+                <i class="fas ${categoryIcons[challenge.category] || 'fa-star'}"></i>
+                ${challenge.category.charAt(0).toUpperCase() + challenge.category.slice(1)}
+              </div>
+              
+              <h3 class="challenge-title">${challenge.title}</h3>
+              <p class="challenge-desc">${challenge.description}</p>
+              
+              <div class="challenge-target">
+                <i class="fas fa-bullseye"></i>
+                Goal: <span>${challenge.target.value.toLocaleString()} ${challenge.target.unit}</span>
+              </div>
+              
+              ${challenge.joined ? `
+                <div class="challenge-progress">
+                  <div class="progress-header">
+                    <span>Progress</span>
+                    <span>${challenge.target.current.toLocaleString()} / ${challenge.target.value.toLocaleString()}</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${Math.min(progress, 100)}%"></div>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+            
+            <div class="card-footer">
+              <div class="time-remaining ${isUrgent ? 'urgent' : ''}">
+                <i class="fas fa-clock"></i>
+                ${challenge.timeRemaining}
+              </div>
+              
+              <div class="participants">
+                <i class="fas fa-users"></i>
+                ${challenge.participants.toLocaleString()}
+              </div>
+              
+              ${isCompleted ? `
+                <button class="btn btn-completed btn-join" disabled>
+                  <i class="fas fa-check"></i>
+                  Completed
+                </button>
+              ` : challenge.joined ? `
+                <button class="btn btn-joined btn-join" onclick="viewChallenge('${challenge.id}')">
+                  <i class="fas fa-eye"></i>
+                  View
+                </button>
+              ` : `
+                <button class="btn btn-primary btn-join" onclick="joinChallenge('${challenge.id}')">
+                  <i class="fas fa-plus"></i>
+                  Join
+                </button>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    // Update counts
+    function updateCounts() {
+      const counts = {
+        all: challenges.length,
+        daily: challenges.filter(c => c.type === 'daily').length,
+        weekly: challenges.filter(c => c.type === 'weekly').length,
+        monthly: challenges.filter(c => c.type === 'monthly').length,
+        special: 1 // Featured challenge
+      };
+      
+      document.getElementById('all-count').textContent = counts.all;
+      document.getElementById('daily-count').textContent = counts.daily;
+      document.getElementById('weekly-count').textContent = counts.weekly;
+      document.getElementById('monthly-count').textContent = counts.monthly;
+      document.getElementById('special-count').textContent = counts.special;
+      
+      const activeCount = challenges.filter(c => c.joined).length;
+      document.getElementById('active-count').textContent = activeCount;
+    }
+    
+    // Join challenge
+    function joinChallenge(id) {
+      const challenge = challenges.find(c => c.id === id);
+      if (challenge) {
+        challenge.joined = true;
+        challenge.participants++;
+        renderChallenges();
+        updateCounts();
+        
+        // Show toast
+        if (window.PWAManager) {
+          window.PWAManager.showToast(`Joined: ${challenge.title}`, 'success');
+        }
+      }
+    }
+    
+    // View challenge details
+    function viewChallenge(id) {
+      // In a real app, this would navigate to a detail page
+      const challenge = challenges.find(c => c.id === id);
+      if (challenge) {
+        alert(`Challenge: ${challenge.title}\n\nProgress: ${challenge.target.current}/${challenge.target.value} ${challenge.target.unit}\n\nKeep going!`);
+      }
+    }
+    
+    // Type tab click
+    document.querySelectorAll('.type-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.type-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentType = tab.dataset.type;
+        
+        // Hide featured section if not showing all
+        document.getElementById('featured-section').style.display = 
+          currentType === 'all' || currentType === 'special' ? 'block' : 'none';
+        
+        renderChallenges();
+      });
+    });
+    
+    // Category filter click
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCategory = btn.dataset.category;
+        renderChallenges();
+      });
+    });
+    
+    // Search input
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderChallenges();
+    });
+    
+    // Initial render
+    renderChallenges();
+    updateCounts();
+  </script>
+</body>
+</html>

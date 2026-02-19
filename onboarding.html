@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#00ff88">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32x32.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/global.css">
+  
+  <title>Setup Your Profile - GamifyFit</title>
+  
+  <style>
+    .onboarding-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-lg);
+      padding-top: 90px;
+    }
+    
+    .onboarding-container {
+      width: 100%;
+      max-width: 600px;
+    }
+    
+    .onboarding-header {
+      text-align: center;
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    .onboarding-header h1 {
+      margin-bottom: var(--spacing-sm);
+      font-size: 1.75rem;
+    }
+    
+    .onboarding-header p {
+      color: var(--text-secondary);
+    }
+    
+    /* Progress Steps */
+    .progress-steps {
+      display: flex;
+      justify-content: center;
+      margin-bottom: var(--spacing-2xl);
+      position: relative;
+    }
+    
+    .progress-steps::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 15%;
+      right: 15%;
+      height: 2px;
+      background: var(--bg-tertiary);
+      z-index: 0;
+    }
+    
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-sm);
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      max-width: 120px;
+    }
+    
+    .step-circle {
+      width: 40px;
+      height: 40px;
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all var(--transition-normal);
+    }
+    
+    .progress-step.active .step-circle {
+      background: var(--gradient-primary);
+      border-color: var(--accent-green);
+      color: var(--bg-primary);
+    }
+    
+    .progress-step.completed .step-circle {
+      background: var(--accent-green);
+      border-color: var(--accent-green);
+      color: var(--bg-primary);
+    }
+    
+    .step-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    
+    .progress-step.active .step-label,
+    .progress-step.completed .step-label {
+      color: var(--accent-green);
+    }
+    
+    /* Form Card */
+    .onboarding-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-color);
+      padding: var(--spacing-2xl);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .onboarding-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-primary);
+    }
+    
+    /* Form Steps */
+    .form-step {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .form-step.active {
+      display: block;
+    }
+    
+    .step-title {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .step-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 255, 136, 0.15);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--accent-green);
+    }
+    
+    .step-title h2 {
+      font-size: 1.25rem;
+      margin-bottom: 4px;
+    }
+    
+    .step-title p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    
+    /* Form Row */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-md);
+    }
+    
+    /* Selection Cards */
+    .selection-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .selection-card {
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+    }
+    
+    .selection-card:hover {
+      border-color: var(--accent-green);
+      background: var(--bg-card);
+    }
+    
+    .selection-card.selected {
+      border-color: var(--accent-green);
+      background: rgba(0, 255, 136, 0.1);
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+    }
+    
+    .selection-card input {
+      display: none;
+    }
+    
+    .selection-card-icon {
+      font-size: 2rem;
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .selection-card-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+    
+    .selection-card-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    /* Goal Selection */
+    .goal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .goal-card {
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    
+    .goal-card:hover {
+      border-color: var(--accent-green);
+    }
+    
+    .goal-card.selected {
+      border-color: var(--accent-green);
+      background: rgba(0, 255, 136, 0.1);
+    }
+    
+    .goal-card input {
+      display: none;
+    }
+    
+    .goal-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    .goal-icon.weight { background: rgba(255, 107, 53, 0.2); color: var(--accent-orange); }
+    .goal-icon.muscle { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); }
+    .goal-icon.active { background: rgba(0, 255, 136, 0.2); color: var(--accent-green); }
+    .goal-icon.endurance { background: rgba(0, 212, 255, 0.2); color: var(--accent-blue); }
+    .goal-icon.flexibility { background: rgba(255, 107, 203, 0.2); color: var(--accent-pink); }
+    
+    .goal-content h4 {
+      margin-bottom: 4px;
+      font-size: 1rem;
+    }
+    
+    .goal-content p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    
+    /* BMI Display */
+    .bmi-display {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      text-align: center;
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .bmi-value {
+      font-family: var(--font-heading);
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .bmi-value.underweight { color: var(--accent-blue); }
+    .bmi-value.normal { color: var(--accent-green); }
+    .bmi-value.overweight { color: var(--accent-yellow); }
+    .bmi-value.obese { color: var(--accent-red); }
+    
+    .bmi-category {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .bmi-scale {
+      display: flex;
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .bmi-scale span {
+      flex: 1;
+    }
+    
+    .bmi-scale .underweight { background: var(--accent-blue); }
+    .bmi-scale .normal { background: var(--accent-green); }
+    .bmi-scale .overweight { background: var(--accent-yellow); }
+    .bmi-scale .obese { background: var(--accent-red); }
+    
+    .bmi-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    
+    .bmi-indicator {
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      position: relative;
+      margin: -18px auto var(--spacing-md);
+      border: 2px solid var(--bg-tertiary);
+      transition: margin-left 0.3s ease;
+    }
+    
+    /* Google Fit Connect */
+    .connect-section {
+      text-align: center;
+      padding: var(--spacing-xl);
+    }
+    
+    .connect-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto var(--spacing-lg);
+      background: var(--bg-tertiary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .connect-icon img {
+      width: 50px;
+      height: 50px;
+    }
+    
+    .connect-section h3 {
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .connect-section > p {
+      margin-bottom: var(--spacing-xl);
+      color: var(--text-secondary);
+    }
+    
+    .connect-features {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
+      flex-wrap: wrap;
+    }
+    
+    .connect-feature {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    
+    .connect-feature i {
+      color: var(--accent-green);
+    }
+    
+    .skip-link {
+      display: block;
+      margin-top: var(--spacing-md);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    
+    /* Form Navigation */
+    .form-nav {
+      display: flex;
+      justify-content: space-between;
+      margin-top: var(--spacing-xl);
+      padding-top: var(--spacing-lg);
+      border-top: 1px solid var(--border-color);
+    }
+    
+    /* Completion */
+    .completion-screen {
+      text-align: center;
+      padding: var(--spacing-xl);
+    }
+    
+    .completion-icon {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto var(--spacing-xl);
+      background: var(--gradient-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: var(--bg-primary);
+      animation: badgeUnlock 0.6s ease forwards;
+    }
+    
+    .completion-screen h2 {
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .completion-stats {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-2xl);
+      margin: var(--spacing-xl) 0;
+      flex-wrap: wrap;
+    }
+    
+    .completion-stat {
+      text-align: center;
+    }
+    
+    .completion-stat-value {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+    
+    .completion-stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .selection-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .goal-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .onboarding-card {
+        padding: var(--spacing-lg);
+      }
+      
+      .progress-steps::before {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="navbar-brand">
+        <i class="fas fa-fire-flame-curved" style="color: var(--accent-green);"></i>
+        <span>GamifyFit</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="onboarding-page">
+    <div class="onboarding-container">
+      <div class="onboarding-header">
+        <h1>Complete Your Profile</h1>
+        <p>Tell us about yourself so we can personalize your fitness journey</p>
+      </div>
+      
+      <!-- Progress Steps -->
+      <div class="progress-steps">
+        <div class="progress-step active" data-step="1">
+          <div class="step-circle">1</div>
+          <span class="step-label">Basic Info</span>
+        </div>
+        <div class="progress-step" data-step="2">
+          <div class="step-circle">2</div>
+          <span class="step-label">Body Stats</span>
+        </div>
+        <div class="progress-step" data-step="3">
+          <div class="step-circle">3</div>
+          <span class="step-label">Goals</span>
+        </div>
+        <div class="progress-step" data-step="4">
+          <div class="step-circle">4</div>
+          <span class="step-label">Connect</span>
+        </div>
+      </div>
+      
+      <div class="onboarding-card">
+        <form id="onboarding-form">
+          
+          <!-- Step 1: Basic Info -->
+          <div class="form-step active" data-step="1">
+            <div class="step-title">
+              <div class="step-icon">
+                <i class="fas fa-user"></i>
+              </div>
+              <div>
+                <h2>Basic Information</h2>
+                <p>Let's start with the basics</p>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-input" id="fullName" placeholder="Enter your full name" required>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Age</label>
+                <input type="number" class="form-input" id="age" placeholder="25" min="13" max="100" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Gender</label>
+                <select class="form-select" id="gender" required>
+                  <option value="">Select gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                  <option value="prefer_not_to_say">Prefer not to say</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-nav">
+              <div></div>
+              <button type="button" class="btn btn-primary" onclick="nextStep()">
+                Continue
+                <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Step 2: Body Stats -->
+          <div class="form-step" data-step="2">
+            <div class="step-title">
+              <div class="step-icon">
+                <i class="fas fa-ruler-vertical"></i>
+              </div>
+              <div>
+                <h2>Body Measurements</h2>
+                <p>We'll calculate your BMI and daily calorie needs</p>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Height (cm)</label>
+                <input type="number" class="form-input" id="height" placeholder="175" min="100" max="250" required oninput="calculateBMI()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Weight (kg)</label>
+                <input type="number" class="form-input" id="weight" placeholder="70" min="30" max="300" step="0.1" required oninput="calculateBMI()">
+              </div>
+            </div>
+            
+            <div class="bmi-display" id="bmi-display" style="display: none;">
+              <div class="bmi-value" id="bmi-value">--</div>
+              <div class="bmi-category" id="bmi-category">Enter your measurements</div>
+              <div class="bmi-scale">
+                <span class="underweight"></span>
+                <span class="normal"></span>
+                <span class="overweight"></span>
+                <span class="obese"></span>
+              </div>
+              <div class="bmi-labels">
+                <span>Underweight</span>
+                <span>Normal</span>
+                <span>Overweight</span>
+                <span>Obese</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Body Type</label>
+              <div class="selection-grid">
+                <label class="selection-card" onclick="selectCard(this, 'bodyType')">
+                  <input type="radio" name="bodyType" value="ectomorph">
+                  <div class="selection-card-icon">🏃</div>
+                  <div class="selection-card-title">Ectomorph</div>
+                  <div class="selection-card-desc">Lean, long limbs, hard to gain weight</div>
+                </label>
+                <label class="selection-card" onclick="selectCard(this, 'bodyType')">
+                  <input type="radio" name="bodyType" value="mesomorph">
+                  <div class="selection-card-icon">💪</div>
+                  <div class="selection-card-title">Mesomorph</div>
+                  <div class="selection-card-desc">Athletic, muscular, gains muscle easily</div>
+                </label>
+                <label class="selection-card" onclick="selectCard(this, 'bodyType')">
+                  <input type="radio" name="bodyType" value="endomorph">
+                  <div class="selection-card-icon">🐻</div>
+                  <div class="selection-card-title">Endomorph</div>
+                  <div class="selection-card-desc">Wider build, stores fat easily</div>
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-nav">
+              <button type="button" class="btn btn-secondary" onclick="prevStep()">
+                <i class="fas fa-arrow-left"></i>
+                Back
+              </button>
+              <button type="button" class="btn btn-primary" onclick="nextStep()">
+                Continue
+                <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Step 3: Fitness Goals -->
+          <div class="form-step" data-step="3">
+            <div class="step-title">
+              <div class="step-icon">
+                <i class="fas fa-bullseye"></i>
+              </div>
+              <div>
+                <h2>Your Fitness Goal</h2>
+                <p>What do you want to achieve?</p>
+              </div>
+            </div>
+            
+            <div class="goal-grid">
+              <label class="goal-card" onclick="selectCard(this, 'fitnessGoal')">
+                <input type="radio" name="fitnessGoal" value="lose_weight">
+                <div class="goal-icon weight">
+                  <i class="fas fa-weight-scale"></i>
+                </div>
+                <div class="goal-content">
+                  <h4>Lose Weight</h4>
+                  <p>Burn fat and slim down</p>
+                </div>
+              </label>
+              
+              <label class="goal-card" onclick="selectCard(this, 'fitnessGoal')">
+                <input type="radio" name="fitnessGoal" value="build_muscle">
+                <div class="goal-icon muscle">
+                  <i class="fas fa-dumbbell"></i>
+                </div>
+                <div class="goal-content">
+                  <h4>Build Muscle</h4>
+                  <p>Gain strength and size</p>
+                </div>
+              </label>
+              
+              <label class="goal-card" onclick="selectCard(this, 'fitnessGoal')">
+                <input type="radio" name="fitnessGoal" value="stay_active">
+                <div class="goal-icon active">
+                  <i class="fas fa-heart-pulse"></i>
+                </div>
+                <div class="goal-content">
+                  <h4>Stay Active</h4>
+                  <p>Maintain overall fitness</p>
+                </div>
+              </label>
+              
+              <label class="goal-card" onclick="selectCard(this, 'fitnessGoal')">
+                <input type="radio" name="fitnessGoal" value="improve_endurance">
+                <div class="goal-icon endurance">
+                  <i class="fas fa-person-running"></i>
+                </div>
+                <div class="goal-content">
+                  <h4>Improve Endurance</h4>
+                  <p>Build stamina and cardio</p>
+                </div>
+              </label>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Activity Level</label>
+              <select class="form-select" id="activityLevel" required>
+                <option value="">Select your activity level</option>
+                <option value="sedentary">Sedentary (Little or no exercise)</option>
+                <option value="lightly_active">Lightly Active (1-3 days/week)</option>
+                <option value="moderately_active">Moderately Active (3-5 days/week)</option>
+                <option value="very_active">Very Active (6-7 days/week)</option>
+                <option value="extremely_active">Extremely Active (Athlete level)</option>
+              </select>
+            </div>
+            
+            <div class="form-nav">
+              <button type="button" class="btn btn-secondary" onclick="prevStep()">
+                <i class="fas fa-arrow-left"></i>
+                Back
+              </button>
+              <button type="button" class="btn btn-primary" onclick="nextStep()">
+                Continue
+                <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Step 4: Connect Google Fit -->
+          <div class="form-step" data-step="4">
+            <div class="connect-section">
+              <div class="connect-icon">
+                <img src="https://www.gstatic.com/images/branding/product/2x/google_fit_48dp.png" alt="Google Fit">
+              </div>
+              
+              <h3>Connect Google Fit</h3>
+              <p>Sync your activity data automatically for the best experience</p>
+              
+              <div class="connect-features">
+                <div class="connect-feature">
+                  <i class="fas fa-check-circle"></i>
+                  <span>Auto-sync steps</span>
+                </div>
+                <div class="connect-feature">
+                  <i class="fas fa-check-circle"></i>
+                  <span>Track calories</span>
+                </div>
+                <div class="connect-feature">
+                  <i class="fas fa-check-circle"></i>
+                  <span>Monitor activity</span>
+                </div>
+              </div>
+              
+              <button type="button" class="btn btn-primary btn-lg" id="connect-google-fit">
+                <i class="fab fa-google"></i>
+                Connect Google Fit
+              </button>
+              
+              <a href="#" class="skip-link" onclick="completeOnboarding(); return false;">
+                Skip for now, I'll connect later
+              </a>
+            </div>
+            
+            <div class="form-nav">
+              <button type="button" class="btn btn-secondary" onclick="prevStep()">
+                <i class="fas fa-arrow-left"></i>
+                Back
+              </button>
+              <button type="button" class="btn btn-primary" onclick="completeOnboarding()">
+                Complete Setup
+                <i class="fas fa-check"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Step 5: Completion -->
+          <div class="form-step" data-step="5">
+            <div class="completion-screen">
+              <div class="completion-icon">
+                <i class="fas fa-trophy"></i>
+              </div>
+              
+              <h2>You're All Set! 🎉</h2>
+              <p>Your personalized fitness journey begins now</p>
+              
+              <div class="completion-stats">
+                <div class="completion-stat">
+                  <div class="completion-stat-value" id="final-bmi">--</div>
+                  <div class="completion-stat-label">Your BMI</div>
+                </div>
+                <div class="completion-stat">
+                  <div class="completion-stat-value" id="final-tdee">--</div>
+                  <div class="completion-stat-label">Daily Calories</div>
+                </div>
+                <div class="completion-stat">
+                  <div class="completion-stat-value">Level 1</div>
+                  <div class="completion-stat-label">Starting Level</div>
+                </div>
+              </div>
+              
+              <a href="/dashboard.html" class="btn btn-primary btn-lg">
+                <i class="fas fa-rocket"></i>
+                Go to Dashboard
+              </a>
+            </div>
+          </div>
+          
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/pwa.js"></script>
+  <script>
+    let currentStep = 1;
+    const totalSteps = 5;
+    let userData = {};
+    
+    function updateProgressSteps() {
+      document.querySelectorAll('.progress-step').forEach((step, index) => {
+        const stepNum = index + 1;
+        step.classList.remove('active', 'completed');
+        
+        if (stepNum < currentStep) {
+          step.classList.add('completed');
+          step.querySelector('.step-circle').innerHTML = '<i class="fas fa-check"></i>';
+        } else if (stepNum === currentStep) {
+          step.classList.add('active');
+          step.querySelector('.step-circle').textContent = stepNum;
+        } else {
+          step.querySelector('.step-circle').textContent = stepNum;
+        }
+      });
+    }
+    
+    function showStep(step) {
+      document.querySelectorAll('.form-step').forEach(el => {
+        el.classList.remove('active');
+      });
+      document.querySelector(`.form-step[data-step="${step}"]`).classList.add('active');
+      updateProgressSteps();
+    }
+    
+    function validateStep(step) {
+      switch(step) {
+        case 1:
+          const fullName = document.getElementById('fullName').value.trim();
+          const age = document.getElementById('age').value;
+          const gender = document.getElementById('gender').value;
+          
+          if (!fullName || !age || !gender) {
+            alert('Please fill in all fields');
+            return false;
+          }
+          
+          userData.fullName = fullName;
+          userData.age = parseInt(age);
+          userData.gender = gender;
+          return true;
+          
+        case 2:
+          const height = document.getElementById('height').value;
+          const weight = document.getElementById('weight').value;
+          const bodyType = document.querySelector('input[name="bodyType"]:checked');
+          
+          if (!height || !weight) {
+            alert('Please enter your height and weight');
+            return false;
+          }
+          
+          userData.height = parseFloat(height);
+          userData.weight = parseFloat(weight);
+          userData.bodyType = bodyType ? bodyType.value : null;
+          return true;
+          
+        case 3:
+          const fitnessGoal = document.querySelector('input[name="fitnessGoal"]:checked');
+          const activityLevel = document.getElementById('activityLevel').value;
+          
+          if (!fitnessGoal || !activityLevel) {
+            alert('Please select your fitness goal and activity level');
+            return false;
+          }
+          
+          userData.fitnessGoal = fitnessGoal.value;
+          userData.activityLevel = activityLevel;
+          return true;
+          
+        default:
+          return true;
+      }
+    }
+    
+    function nextStep() {
+      if (validateStep(currentStep)) {
+        currentStep++;
+        showStep(currentStep);
+      }
+    }
+    
+    function prevStep() {
+      if (currentStep > 1) {
+        currentStep--;
+        showStep(currentStep);
+      }
+    }
+    
+    function selectCard(card, groupName) {
+      document.querySelectorAll(`input[name="${groupName}"]`).forEach(input => {
+        input.closest('.selection-card, .goal-card').classList.remove('selected');
+      });
+      card.classList.add('selected');
+      card.querySelector('input').checked = true;
+    }
+    
+    function calculateBMI() {
+      const height = parseFloat(document.getElementById('height').value);
+      const weight = parseFloat(document.getElementById('weight').value);
+      
+      if (height && weight) {
+        const heightM = height / 100;
+        const bmi = weight / (heightM * heightM);
+        
+        document.getElementById('bmi-display').style.display = 'block';
+        document.getElementById('bmi-value').textContent = bmi.toFixed(1);
+        
+        const bmiValueEl = document.getElementById('bmi-value');
+        const categoryEl = document.getElementById('bmi-category');
+        
+        bmiValueEl.className = 'bmi-value';
+        
+        if (bmi < 18.5) {
+          bmiValueEl.classList.add('underweight');
+          categoryEl.textContent = 'Underweight';
+        } else if (bmi < 25) {
+          bmiValueEl.classList.add('normal');
+          categoryEl.textContent = 'Normal Weight';
+        } else if (bmi < 30) {
+          bmiValueEl.classList.add('overweight');
+          categoryEl.textContent = 'Overweight';
+        } else {
+          bmiValueEl.classList.add('obese');
+          categoryEl.textContent = 'Obese';
+        }
+        
+        userData.bmi = bmi;
+      }
+    }
+    
+    function calculateTDEE() {
+      // Mifflin-St Jeor Equation
+      const { weight, height, age, gender, activityLevel } = userData;
+      
+      let bmr;
+      if (gender === 'male') {
+        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+      } else {
+        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+      }
+      
+      const activityMultipliers = {
+        'sedentary': 1.2,
+        'lightly_active': 1.375,
+        'moderately_active': 1.55,
+        'very_active': 1.725,
+        'extremely_active': 1.9
+      };
+      
+      const tdee = Math.round(bmr * (activityMultipliers[activityLevel] || 1.2));
+      userData.tdee = tdee;
+      
+      return tdee;
+    }
+    
+    function completeOnboarding() {
+      // Calculate TDEE
+      const tdee = calculateTDEE();
+      
+      // Update completion stats
+      document.getElementById('final-bmi').textContent = userData.bmi ? userData.bmi.toFixed(1) : '--';
+      document.getElementById('final-tdee').textContent = tdee ? tdee.toLocaleString() : '--';
+      
+      // Save user data to localStorage (would normally send to server)
+      localStorage.setItem('userData', JSON.stringify(userData));
+      localStorage.setItem('onboardingCompleted', 'true');
+      
+      // Show completion screen
+      currentStep = 5;
+      showStep(currentStep);
+    }
+    
+    // Google Fit connection (placeholder)
+    document.getElementById('connect-google-fit').addEventListener('click', function() {
+      // In a real app, this would initiate OAuth flow
+      alert('Google Fit integration requires OAuth setup. This would redirect to Google\'s authentication flow.');
+      userData.googleFitConnected = true;
+    });
+    
+    // Initialize
+    updateProgressSteps();
+  </script>
+</body>
+</html>

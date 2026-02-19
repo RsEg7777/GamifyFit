@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#00ff88">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32x32.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/global.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <title>Progress - GamifyFit</title>
+  
+  <style>
+    .progress-page {
+      min-height: 100vh;
+      padding-bottom: 100px;
+    }
+    
+    /* Header */
+    .progress-header {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+      padding: var(--spacing-xl) var(--spacing-lg);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .page-title {
+      font-size: 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    .page-title i {
+      color: var(--accent-green);
+    }
+    
+    /* Time Filter */
+    .time-filter {
+      display: flex;
+      gap: var(--spacing-xs);
+      background: var(--bg-primary);
+      padding: var(--spacing-xs);
+      border-radius: var(--radius-md);
+    }
+    
+    .time-btn {
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: transparent;
+      border: none;
+      font-family: var(--font-heading);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+    }
+    
+    .time-btn.active {
+      background: var(--gradient-primary);
+      color: var(--bg-primary);
+    }
+    
+    .time-btn:hover:not(.active) {
+      color: var(--text-primary);
+    }
+    
+    /* Main Content */
+    .progress-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--spacing-lg);
+    }
+    
+    /* Stats Overview */
+    .stats-overview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    .stat-card {
+      background: var(--bg-secondary);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      text-align: center;
+    }
+    
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--spacing-sm);
+      font-size: 1.25rem;
+    }
+    
+    .stat-icon.green {
+      background: rgba(0, 255, 136, 0.15);
+      color: var(--accent-green);
+    }
+    
+    .stat-icon.blue {
+      background: rgba(0, 212, 255, 0.15);
+      color: var(--accent-blue);
+    }
+    
+    .stat-icon.purple {
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--accent-purple);
+    }
+    
+    .stat-icon.yellow {
+      background: rgba(255, 193, 7, 0.15);
+      color: var(--accent-yellow);
+    }
+    
+    .stat-icon.red {
+      background: rgba(255, 71, 87, 0.15);
+      color: var(--accent-red);
+    }
+    
+    .stat-value {
+      font-family: var(--font-heading);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    .stat-change {
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    
+    .stat-change.positive {
+      color: var(--accent-green);
+    }
+    
+    .stat-change.negative {
+      color: var(--accent-red);
+    }
+    
+    /* Charts Grid */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    .chart-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      padding: var(--spacing-lg);
+    }
+    
+    .chart-card.full-width {
+      grid-column: 1 / -1;
+    }
+    
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .chart-title {
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    .chart-title i {
+      color: var(--accent-green);
+    }
+    
+    .chart-legend {
+      display: flex;
+      gap: var(--spacing-md);
+      font-size: 0.75rem;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+    }
+    
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    
+    .chart-container {
+      position: relative;
+      height: 250px;
+    }
+    
+    /* Activity Summary */
+    .activity-section {
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    .section-title {
+      font-size: 1.25rem;
+      margin-bottom: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    .section-title i {
+      color: var(--accent-green);
+    }
+    
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+    
+    .activity-item {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      padding: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    
+    .activity-icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(0, 255, 136, 0.15);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-green);
+    }
+    
+    .activity-info {
+      flex: 1;
+    }
+    
+    .activity-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    
+    .activity-details {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    
+    .activity-xp {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+    
+    .activity-time {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    /* Challenges Completed */
+    .challenges-section {
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    .challenges-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--spacing-md);
+    }
+    
+    .completed-challenge {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      padding: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    
+    .challenge-badge {
+      width: 50px;
+      height: 50px;
+      background: var(--gradient-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    
+    .challenge-info {
+      flex: 1;
+    }
+    
+    .challenge-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    
+    .challenge-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    .challenge-xp {
+      text-align: right;
+    }
+    
+    .challenge-xp-value {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+    
+    .challenge-xp-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    
+    /* Body Metrics */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-md);
+    }
+    
+    .metric-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      padding: var(--spacing-lg);
+    }
+    
+    .metric-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .metric-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    
+    .metric-change {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+    }
+    
+    .metric-change.positive {
+      background: rgba(0, 255, 136, 0.15);
+      color: var(--accent-green);
+    }
+    
+    .metric-change.negative {
+      background: rgba(255, 71, 87, 0.15);
+      color: var(--accent-red);
+    }
+    
+    .metric-value {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    
+    .metric-unit {
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    
+    .metric-progress {
+      margin-top: var(--spacing-md);
+    }
+    
+    .metric-progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    
+    .metric-progress-bar {
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    
+    .metric-progress-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+    }
+    
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      display: flex;
+      justify-content: space-around;
+      z-index: 100;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.7rem;
+      padding: var(--spacing-xs);
+      transition: color var(--transition-fast);
+    }
+    
+    .nav-item i {
+      font-size: 1.25rem;
+    }
+    
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--accent-green);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-top {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: flex-start;
+      }
+      
+      .time-filter {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .chart-card.full-width {
+        grid-column: auto;
+      }
+      
+      .stats-overview {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-page">
+    <!-- Header -->
+    <header class="progress-header">
+      <div class="header-content">
+        <div class="header-top">
+          <h1 class="page-title">
+            <i class="fas fa-chart-line"></i>
+            My Progress
+          </h1>
+          
+          <div class="time-filter">
+            <button class="time-btn" data-period="week">Week</button>
+            <button class="time-btn active" data-period="month">Month</button>
+            <button class="time-btn" data-period="year">Year</button>
+            <button class="time-btn" data-period="all">All Time</button>
+          </div>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="progress-content">
+      <!-- Stats Overview -->
+      <div class="stats-overview">
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <div class="stat-value">2,450</div>
+          <div class="stat-label">Total XP</div>
+          <div class="stat-change positive">
+            <i class="fas fa-arrow-up"></i>
+            +320 this month
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <i class="fas fa-dumbbell"></i>
+          </div>
+          <div class="stat-value">24</div>
+          <div class="stat-label">Workouts</div>
+          <div class="stat-change positive">
+            <i class="fas fa-arrow-up"></i>
+            +6 vs last month
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon purple">
+            <i class="fas fa-fire"></i>
+          </div>
+          <div class="stat-value">42,800</div>
+          <div class="stat-label">Calories Burned</div>
+          <div class="stat-change positive">
+            <i class="fas fa-arrow-up"></i>
+            +12%
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon yellow">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <div class="stat-value">8</div>
+          <div class="stat-label">Challenges Done</div>
+          <div class="stat-change positive">
+            <i class="fas fa-arrow-up"></i>
+            +3 this month
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon red">
+            <i class="fas fa-shoe-prints"></i>
+          </div>
+          <div class="stat-value">185K</div>
+          <div class="stat-label">Total Steps</div>
+          <div class="stat-change positive">
+            <i class="fas fa-arrow-up"></i>
+            +23K vs last month
+          </div>
+        </div>
+      </div>
+      
+      <!-- Charts -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">
+              <i class="fas fa-fire-flame-curved"></i>
+              Calories Burned
+            </h3>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <div class="legend-dot" style="background: var(--accent-green);"></div>
+                This Month
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background: var(--text-muted);"></div>
+                Last Month
+              </div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="caloriesChart"></canvas>
+          </div>
+        </div>
+        
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">
+              <i class="fas fa-weight-scale"></i>
+              Weight Trend
+            </h3>
+          </div>
+          <div class="chart-container">
+            <canvas id="weightChart"></canvas>
+          </div>
+        </div>
+        
+        <div class="chart-card full-width">
+          <div class="chart-header">
+            <h3 class="chart-title">
+              <i class="fas fa-shoe-prints"></i>
+              Daily Steps
+            </h3>
+          </div>
+          <div class="chart-container">
+            <canvas id="stepsChart"></canvas>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Body Metrics -->
+      <section class="activity-section">
+        <h2 class="section-title">
+          <i class="fas fa-body-text"></i>
+          Body Metrics
+        </h2>
+        
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">Current Weight</span>
+              <span class="metric-change negative">
+                <i class="fas fa-arrow-down"></i> -2.3 kg
+              </span>
+            </div>
+            <div class="metric-value">
+              74.2 <span class="metric-unit">kg</span>
+            </div>
+            <div class="metric-progress">
+              <div class="metric-progress-label">
+                <span>Goal: 70 kg</span>
+                <span>88%</span>
+              </div>
+              <div class="metric-progress-bar">
+                <div class="metric-progress-fill" style="width: 88%"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">BMI</span>
+              <span class="metric-change positive">
+                <i class="fas fa-arrow-down"></i> -0.7
+              </span>
+            </div>
+            <div class="metric-value">
+              23.4
+            </div>
+            <div class="metric-progress">
+              <div class="metric-progress-label">
+                <span>Normal Range</span>
+                <span>18.5 - 24.9</span>
+              </div>
+              <div class="metric-progress-bar">
+                <div class="metric-progress-fill" style="width: 75%; background: var(--accent-green);"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">Body Fat %</span>
+              <span class="metric-change negative">
+                <i class="fas fa-arrow-down"></i> -1.2%
+              </span>
+            </div>
+            <div class="metric-value">
+              18.5 <span class="metric-unit">%</span>
+            </div>
+            <div class="metric-progress">
+              <div class="metric-progress-label">
+                <span>Goal: 15%</span>
+                <span>74%</span>
+              </div>
+              <div class="metric-progress-bar">
+                <div class="metric-progress-fill" style="width: 74%"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">Muscle Mass</span>
+              <span class="metric-change positive">
+                <i class="fas fa-arrow-up"></i> +0.8 kg
+              </span>
+            </div>
+            <div class="metric-value">
+              32.1 <span class="metric-unit">kg</span>
+            </div>
+            <div class="metric-progress">
+              <div class="metric-progress-label">
+                <span>Goal: 35 kg</span>
+                <span>92%</span>
+              </div>
+              <div class="metric-progress-bar">
+                <div class="metric-progress-fill" style="width: 92%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Recent Activity -->
+      <section class="activity-section">
+        <h2 class="section-title">
+          <i class="fas fa-clock-rotate-left"></i>
+          Recent Activity
+        </h2>
+        
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-icon">
+              <i class="fas fa-dumbbell"></i>
+            </div>
+            <div class="activity-info">
+              <div class="activity-name">Upper Body Workout</div>
+              <div class="activity-details">45 min • 320 cal burned</div>
+            </div>
+            <div>
+              <div class="activity-xp">+75 XP</div>
+              <div class="activity-time">2 hours ago</div>
+            </div>
+          </div>
+          
+          <div class="activity-item">
+            <div class="activity-icon">
+              <i class="fas fa-shoe-prints"></i>
+            </div>
+            <div class="activity-info">
+              <div class="activity-name">10K Steps Challenge</div>
+              <div class="activity-details">12,450 steps • Daily challenge</div>
+            </div>
+            <div>
+              <div class="activity-xp">+50 XP</div>
+              <div class="activity-time">5 hours ago</div>
+            </div>
+          </div>
+          
+          <div class="activity-item">
+            <div class="activity-icon">
+              <i class="fas fa-fire"></i>
+            </div>
+            <div class="activity-info">
+              <div class="activity-name">7 Day Streak!</div>
+              <div class="activity-details">Logged in 7 days in a row</div>
+            </div>
+            <div>
+              <div class="activity-xp">+100 XP</div>
+              <div class="activity-time">Yesterday</div>
+            </div>
+          </div>
+          
+          <div class="activity-item">
+            <div class="activity-icon">
+              <i class="fas fa-medal"></i>
+            </div>
+            <div class="activity-info">
+              <div class="activity-name">Badge Earned: Push-Up Pro</div>
+              <div class="activity-details">Completed 500 push-ups total</div>
+            </div>
+            <div>
+              <div class="activity-xp">+150 XP</div>
+              <div class="activity-time">2 days ago</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Completed Challenges -->
+      <section class="challenges-section">
+        <h2 class="section-title">
+          <i class="fas fa-trophy"></i>
+          Recently Completed Challenges
+        </h2>
+        
+        <div class="challenges-grid">
+          <div class="completed-challenge">
+            <div class="challenge-badge">🏃</div>
+            <div class="challenge-info">
+              <div class="challenge-name">Marathon Prep Week</div>
+              <div class="challenge-date">Completed Jan 14, 2024</div>
+            </div>
+            <div class="challenge-xp">
+              <div class="challenge-xp-value">+200</div>
+              <div class="challenge-xp-label">XP</div>
+            </div>
+          </div>
+          
+          <div class="completed-challenge">
+            <div class="challenge-badge">💪</div>
+            <div class="challenge-info">
+              <div class="challenge-name">Core Crusher</div>
+              <div class="challenge-date">Completed Jan 12, 2024</div>
+            </div>
+            <div class="challenge-xp">
+              <div class="challenge-xp-value">+175</div>
+              <div class="challenge-xp-label">XP</div>
+            </div>
+          </div>
+          
+          <div class="completed-challenge">
+            <div class="challenge-badge">🧘</div>
+            <div class="challenge-info">
+              <div class="challenge-name">Morning Meditation</div>
+              <div class="challenge-date">Completed Jan 10, 2024</div>
+            </div>
+            <div class="challenge-xp">
+              <div class="challenge-xp-value">+30</div>
+              <div class="challenge-xp-label">XP</div>
+            </div>
+          </div>
+          
+          <div class="completed-challenge">
+            <div class="challenge-badge">💧</div>
+            <div class="challenge-info">
+              <div class="challenge-name">Hydration Hero</div>
+              <div class="challenge-date">Completed Jan 8, 2024</div>
+            </div>
+            <div class="challenge-xp">
+              <div class="challenge-xp-value">+25</div>
+              <div class="challenge-xp-label">XP</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="/dashboard.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="/challenges.html" class="nav-item">
+        <i class="fas fa-crosshairs"></i>
+        <span>Challenges</span>
+      </a>
+      <a href="/plan.html" class="nav-item">
+        <i class="fas fa-calendar-check"></i>
+        <span>Plan</span>
+      </a>
+      <a href="/progress.html" class="nav-item active">
+        <i class="fas fa-chart-line"></i>
+        <span>Progress</span>
+      </a>
+      <a href="/profile.html" class="nav-item">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="/js/pwa.js"></script>
+  <script>
+    // Chart.js configuration
+    Chart.defaults.color = '#8a8a9a';
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+    Chart.defaults.font.family = "'Poppins', sans-serif";
+    
+    // Calories Chart
+    const caloriesCtx = document.getElementById('caloriesChart').getContext('2d');
+    new Chart(caloriesCtx, {
+      type: 'line',
+      data: {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [
+          {
+            label: 'This Month',
+            data: [8500, 10200, 12400, 11700],
+            borderColor: '#00ff88',
+            backgroundColor: 'rgba(0, 255, 136, 0.1)',
+            fill: true,
+            tension: 0.4
+          },
+          {
+            label: 'Last Month',
+            data: [7200, 8100, 9500, 10000],
+            borderColor: '#8a8a9a',
+            borderDash: [5, 5],
+            fill: false,
+            tension: 0.4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)'
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+    
+    // Weight Chart
+    const weightCtx = document.getElementById('weightChart').getContext('2d');
+    new Chart(weightCtx, {
+      type: 'line',
+      data: {
+        labels: ['Jan 1', 'Jan 5', 'Jan 10', 'Jan 15', 'Jan 20'],
+        datasets: [{
+          label: 'Weight',
+          data: [76.5, 76.0, 75.3, 74.8, 74.2],
+          borderColor: '#00d4ff',
+          backgroundColor: 'rgba(0, 212, 255, 0.1)',
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            min: 70,
+            max: 80,
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)'
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+    
+    // Steps Chart
+    const stepsCtx = document.getElementById('stepsChart').getContext('2d');
+    new Chart(stepsCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Steps',
+          data: [8234, 12450, 6780, 9120, 11340, 15200, 8900],
+          backgroundColor: function(context) {
+            const value = context.raw;
+            return value >= 10000 ? '#00ff88' : 'rgba(0, 255, 136, 0.4)';
+          },
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          annotation: {
+            annotations: {
+              line1: {
+                type: 'line',
+                yMin: 10000,
+                yMax: 10000,
+                borderColor: '#ffc107',
+                borderWidth: 2,
+                borderDash: [5, 5]
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)'
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+    
+    // Time filter
+    document.querySelectorAll('.time-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        // In a real app, this would reload data for the selected period
+      });
+    });
+  </script>
+</body>
+</html>

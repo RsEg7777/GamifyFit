@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#00ff88">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32x32.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/global.css">
+  
+  <title>Leaderboard - GamifyFit</title>
+  
+  <style>
+    .leaderboard-page {
+      min-height: 100vh;
+      padding-bottom: 100px;
+    }
+    
+    /* Header */
+    .leaderboard-header {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+      padding: var(--spacing-xl) var(--spacing-lg);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .header-content {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .page-title {
+      font-size: 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .page-title i {
+      color: var(--accent-yellow);
+    }
+    
+    /* Tabs & Filters Row */
+    .controls-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--spacing-md);
+      flex-wrap: wrap;
+    }
+    
+    .scope-tabs {
+      display: flex;
+      gap: var(--spacing-xs);
+      background: var(--bg-primary);
+      padding: var(--spacing-xs);
+      border-radius: var(--radius-md);
+    }
+    
+    .scope-tab {
+      padding: var(--spacing-sm) var(--spacing-lg);
+      background: transparent;
+      border: none;
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+    
+    .scope-tab.active {
+      background: var(--gradient-primary);
+      color: var(--bg-primary);
+    }
+    
+    .scope-tab:hover:not(.active) {
+      color: var(--text-primary);
+    }
+    
+    .time-filter {
+      display: flex;
+      gap: var(--spacing-xs);
+    }
+    
+    .time-btn {
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+    }
+    
+    .time-btn.active {
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+      background: rgba(0, 255, 136, 0.1);
+    }
+    
+    .time-btn:hover:not(.active) {
+      border-color: var(--text-muted);
+      color: var(--text-primary);
+    }
+    
+    /* Main Content */
+    .leaderboard-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: var(--spacing-lg);
+    }
+    
+    /* Top 3 Podium */
+    .podium {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-2xl);
+      padding: var(--spacing-xl) 0;
+    }
+    
+    .podium-place {
+      text-align: center;
+      position: relative;
+    }
+    
+    .podium-place.first {
+      order: 2;
+    }
+    
+    .podium-place.second {
+      order: 1;
+    }
+    
+    .podium-place.third {
+      order: 3;
+    }
+    
+    .podium-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto var(--spacing-sm);
+      position: relative;
+      border: 3px solid var(--border-color);
+    }
+    
+    .podium-place.first .podium-avatar {
+      width: 100px;
+      height: 100px;
+      font-size: 2.5rem;
+      border-color: var(--accent-yellow);
+      box-shadow: 0 0 30px rgba(255, 193, 7, 0.3);
+    }
+    
+    .podium-place.second .podium-avatar {
+      border-color: #c0c0c0;
+    }
+    
+    .podium-place.third .podium-avatar {
+      border-color: #cd7f32;
+    }
+    
+    .podium-rank {
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    
+    .podium-place.first .podium-rank {
+      background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+      color: #000;
+      width: 32px;
+      height: 32px;
+    }
+    
+    .podium-place.second .podium-rank {
+      background: linear-gradient(135deg, #e0e0e0 0%, #b0b0b0 100%);
+      color: #000;
+    }
+    
+    .podium-place.third .podium-rank {
+      background: linear-gradient(135deg, #cd7f32 0%, #a05a20 100%);
+      color: #fff;
+    }
+    
+    .podium-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+      font-size: 0.95rem;
+    }
+    
+    .podium-xp {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent-green);
+      font-size: 1.1rem;
+    }
+    
+    .podium-place.first .podium-xp {
+      font-size: 1.3rem;
+    }
+    
+    .podium-level {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    .podium-stand {
+      width: 100px;
+      margin-top: var(--spacing-md);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+    
+    .podium-place.first .podium-stand {
+      height: 80px;
+      background: linear-gradient(180deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 215, 0, 0.1) 100%);
+      width: 120px;
+    }
+    
+    .podium-place.second .podium-stand {
+      height: 60px;
+      background: linear-gradient(180deg, rgba(192, 192, 192, 0.3) 0%, rgba(192, 192, 192, 0.1) 100%);
+    }
+    
+    .podium-place.third .podium-stand {
+      height: 40px;
+      background: linear-gradient(180deg, rgba(205, 127, 50, 0.3) 0%, rgba(205, 127, 50, 0.1) 100%);
+    }
+    
+    /* Your Rank Card */
+    .your-rank-card {
+      background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+      border: 1px solid var(--accent-green);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
+    }
+    
+    .your-rank-position {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent-green);
+      min-width: 80px;
+      text-align: center;
+    }
+    
+    .your-rank-position span {
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+    
+    .your-rank-info {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    
+    .your-rank-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    
+    .your-rank-details h3 {
+      font-size: 1.1rem;
+      margin-bottom: 2px;
+    }
+    
+    .your-rank-details p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    
+    .your-rank-xp {
+      text-align: right;
+    }
+    
+    .your-rank-xp-value {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+    
+    .your-rank-xp-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    /* Leaderboard List */
+    .leaderboard-list {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+    
+    .leaderboard-header-row {
+      display: grid;
+      grid-template-columns: 60px 1fr 100px 100px;
+      padding: var(--spacing-md) var(--spacing-lg);
+      background: var(--bg-tertiary);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+    }
+    
+    .leaderboard-row {
+      display: grid;
+      grid-template-columns: 60px 1fr 100px 100px;
+      padding: var(--spacing-md) var(--spacing-lg);
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      transition: background var(--transition-fast);
+    }
+    
+    .leaderboard-row:last-child {
+      border-bottom: none;
+    }
+    
+    .leaderboard-row:hover {
+      background: rgba(0, 255, 136, 0.05);
+    }
+    
+    .leaderboard-row.highlight {
+      background: rgba(0, 255, 136, 0.1);
+    }
+    
+    .row-rank {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+    
+    .leaderboard-row:nth-child(2) .row-rank { color: #ffd700; }
+    .leaderboard-row:nth-child(3) .row-rank { color: #c0c0c0; }
+    .leaderboard-row:nth-child(4) .row-rank { color: #cd7f32; }
+    
+    .row-user {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    
+    .row-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+    
+    .row-name {
+      font-weight: 600;
+    }
+    
+    .row-level {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    .row-xp {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+    
+    .row-change {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.85rem;
+    }
+    
+    .row-change.up {
+      color: var(--accent-green);
+    }
+    
+    .row-change.down {
+      color: var(--accent-red);
+    }
+    
+    .row-change.same {
+      color: var(--text-muted);
+    }
+    
+    /* Load More */
+    .load-more {
+      text-align: center;
+      padding: var(--spacing-xl);
+    }
+    
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      display: flex;
+      justify-content: space-around;
+      z-index: 100;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.7rem;
+      padding: var(--spacing-xs);
+      transition: color var(--transition-fast);
+    }
+    
+    .nav-item i {
+      font-size: 1.25rem;
+    }
+    
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--accent-green);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .controls-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .scope-tabs {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .time-filter {
+        justify-content: center;
+      }
+      
+      .podium {
+        padding: var(--spacing-md) 0;
+      }
+      
+      .podium-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+      }
+      
+      .podium-place.first .podium-avatar {
+        width: 70px;
+        height: 70px;
+        font-size: 1.75rem;
+      }
+      
+      .podium-stand {
+        width: 70px;
+      }
+      
+      .podium-place.first .podium-stand {
+        width: 80px;
+      }
+      
+      .your-rank-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .your-rank-info {
+        flex-direction: column;
+      }
+      
+      .your-rank-xp {
+        text-align: center;
+      }
+      
+      .leaderboard-header-row,
+      .leaderboard-row {
+        grid-template-columns: 50px 1fr 80px;
+      }
+      
+      .leaderboard-header-row > :last-child,
+      .leaderboard-row > :last-child {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="leaderboard-page">
+    <!-- Header -->
+    <header class="leaderboard-header">
+      <div class="header-content">
+        <h1 class="page-title">
+          <i class="fas fa-ranking-star"></i>
+          Leaderboard
+        </h1>
+        
+        <div class="controls-row">
+          <div class="scope-tabs">
+            <button class="scope-tab active" data-scope="global">
+              <i class="fas fa-globe"></i>
+              Global
+            </button>
+            <button class="scope-tab" data-scope="friends">
+              <i class="fas fa-user-group"></i>
+              Friends
+            </button>
+            <button class="scope-tab" data-scope="country">
+              <i class="fas fa-flag"></i>
+              Country
+            </button>
+          </div>
+          
+          <div class="time-filter">
+            <button class="time-btn active" data-period="weekly">This Week</button>
+            <button class="time-btn" data-period="monthly">This Month</button>
+            <button class="time-btn" data-period="all">All Time</button>
+          </div>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="leaderboard-content">
+      <!-- Top 3 Podium -->
+      <div class="podium">
+        <div class="podium-place second">
+          <div class="podium-avatar">
+            🦊
+            <div class="podium-rank">2</div>
+          </div>
+          <div class="podium-name">FitWarrior</div>
+          <div class="podium-xp">4,820 XP</div>
+          <div class="podium-level">Level 18</div>
+          <div class="podium-stand"></div>
+        </div>
+        
+        <div class="podium-place first">
+          <div class="podium-avatar">
+            🦁
+            <div class="podium-rank">1</div>
+          </div>
+          <div class="podium-name">IronPhoenix</div>
+          <div class="podium-xp">5,230 XP</div>
+          <div class="podium-level">Level 21</div>
+          <div class="podium-stand"></div>
+        </div>
+        
+        <div class="podium-place third">
+          <div class="podium-avatar">
+            🐺
+            <div class="podium-rank">3</div>
+          </div>
+          <div class="podium-name">GymNinja</div>
+          <div class="podium-xp">4,510 XP</div>
+          <div class="podium-level">Level 17</div>
+          <div class="podium-stand"></div>
+        </div>
+      </div>
+      
+      <!-- Your Rank -->
+      <div class="your-rank-card">
+        <div class="your-rank-position">
+          #42<span>nd</span>
+        </div>
+        <div class="your-rank-info">
+          <div class="your-rank-avatar">👤</div>
+          <div class="your-rank-details">
+            <h3>You</h3>
+            <p>Level 12 • Rising Star</p>
+          </div>
+        </div>
+        <div class="your-rank-xp">
+          <div class="your-rank-xp-value">2,450 XP</div>
+          <div class="your-rank-xp-label">this week</div>
+        </div>
+      </div>
+      
+      <!-- Leaderboard List -->
+      <div class="leaderboard-list">
+        <div class="leaderboard-header-row">
+          <div>Rank</div>
+          <div>Player</div>
+          <div>XP</div>
+          <div>Change</div>
+        </div>
+        
+        <div class="leaderboard-row" id="leaderboard-body">
+          <!-- Rows will be injected via JS -->
+        </div>
+      </div>
+      
+      <div class="load-more">
+        <button class="btn btn-outline" onclick="loadMore()">
+          <i class="fas fa-chevron-down"></i>
+          Load More
+        </button>
+      </div>
+    </main>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="/dashboard.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="/challenges.html" class="nav-item">
+        <i class="fas fa-crosshairs"></i>
+        <span>Challenges</span>
+      </a>
+      <a href="/plan.html" class="nav-item">
+        <i class="fas fa-calendar-check"></i>
+        <span>Plan</span>
+      </a>
+      <a href="/leaderboard.html" class="nav-item active">
+        <i class="fas fa-ranking-star"></i>
+        <span>Ranks</span>
+      </a>
+      <a href="/profile.html" class="nav-item">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="/js/pwa.js"></script>
+  <script>
+    // Sample leaderboard data
+    const leaderboardData = [
+      { rank: 1, name: 'IronPhoenix', avatar: '🦁', level: 21, xp: 5230, change: 0 },
+      { rank: 2, name: 'FitWarrior', avatar: '🦊', level: 18, xp: 4820, change: 2 },
+      { rank: 3, name: 'GymNinja', avatar: '🐺', level: 17, xp: 4510, change: -1 },
+      { rank: 4, name: 'CardioKing', avatar: '🦅', level: 16, xp: 4280, change: 1 },
+      { rank: 5, name: 'StrengthQueen', avatar: '👸', level: 16, xp: 4150, change: -2 },
+      { rank: 6, name: 'RunnerX', avatar: '🏃', level: 15, xp: 3980, change: 3 },
+      { rank: 7, name: 'FlexMaster', avatar: '🧘', level: 15, xp: 3870, change: 0 },
+      { rank: 8, name: 'PowerLifter', avatar: '💪', level: 14, xp: 3720, change: -1 },
+      { rank: 9, name: 'FitnessFury', avatar: '🔥', level: 14, xp: 3650, change: 2 },
+      { rank: 10, name: 'HealthHero', avatar: '🦸', level: 14, xp: 3540, change: 0 },
+      { rank: 11, name: 'SweatWarrior', avatar: '💦', level: 13, xp: 3420, change: -3 },
+      { rank: 12, name: 'MuscleMan', avatar: '🏋️', level: 13, xp: 3310, change: 1 },
+      { rank: 13, name: 'EnduranceElite', avatar: '⚡', level: 13, xp: 3200, change: 0 },
+      { rank: 14, name: 'FitFighter', avatar: '🥊', level: 12, xp: 3080, change: 4 },
+      { rank: 15, name: 'ZenRunner', avatar: '🧘‍♂️', level: 12, xp: 2970, change: -2 }
+    ];
+    
+    // Render leaderboard
+    function renderLeaderboard() {
+      const container = document.querySelector('.leaderboard-list');
+      const headerRow = container.querySelector('.leaderboard-header-row');
+      
+      // Clear existing rows except header
+      container.innerHTML = '';
+      container.appendChild(headerRow);
+      
+      leaderboardData.forEach((user, index) => {
+        const changeIcon = user.change > 0 ? 'fa-arrow-up' : user.change < 0 ? 'fa-arrow-down' : 'fa-minus';
+        const changeClass = user.change > 0 ? 'up' : user.change < 0 ? 'down' : 'same';
+        const changeText = user.change !== 0 ? Math.abs(user.change) : '—';
+        
+        const row = document.createElement('div');
+        row.className = 'leaderboard-row';
+        row.innerHTML = `
+          <div class="row-rank">${user.rank}</div>
+          <div class="row-user">
+            <div class="row-avatar">${user.avatar}</div>
+            <div>
+              <div class="row-name">${user.name}</div>
+              <div class="row-level">Level ${user.level}</div>
+            </div>
+          </div>
+          <div class="row-xp">${user.xp.toLocaleString()}</div>
+          <div class="row-change ${changeClass}">
+            <i class="fas ${changeIcon}"></i>
+            ${changeText}
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+    
+    // Scope tabs
+    document.querySelectorAll('.scope-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.scope-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        // In a real app, this would load different data
+      });
+    });
+    
+    // Time filter
+    document.querySelectorAll('.time-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        // In a real app, this would reload data for the selected period
+      });
+    });
+    
+    // Load more
+    function loadMore() {
+      alert('Loading more users...');
+      // In a real app, this would fetch more data
+    }
+    
+    // Initial render
+    renderLeaderboard();
+  </script>
+</body>
+</html>

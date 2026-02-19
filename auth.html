@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#00ff88">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32x32.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/global.css">
+  
+  <title>Login - GamifyFit</title>
+  
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+    }
+    
+    .auth-visual {
+      flex: 1;
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-2xl);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .auth-visual::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(0, 255, 136, 0.1) 0%, transparent 50%);
+      animation: pulse 8s ease-in-out infinite;
+    }
+    
+    .auth-visual-content {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      max-width: 400px;
+    }
+    
+    .auth-logo {
+      font-family: var(--font-heading);
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: var(--spacing-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-md);
+    }
+    
+    .auth-logo i {
+      color: var(--accent-green);
+    }
+    
+    .auth-logo span {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .auth-visual h2 {
+      font-size: 1.5rem;
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .auth-visual p {
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-2xl);
+    }
+    
+    .auth-features {
+      text-align: left;
+    }
+    
+    .auth-feature {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+      padding: var(--spacing-md);
+      background: rgba(0, 255, 136, 0.05);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(0, 255, 136, 0.1);
+    }
+    
+    .auth-feature-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(0, 255, 136, 0.15);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-green);
+    }
+    
+    .auth-feature-text {
+      flex: 1;
+    }
+    
+    .auth-feature-text h4 {
+      font-size: 0.95rem;
+      margin-bottom: 2px;
+    }
+    
+    .auth-feature-text p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    
+    /* Auth Form Side */
+    .auth-form-section {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-2xl);
+      background: var(--bg-primary);
+    }
+    
+    .auth-form-container {
+      width: 100%;
+      max-width: 420px;
+    }
+    
+    .auth-tabs {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-xl);
+      background: var(--bg-secondary);
+      padding: var(--spacing-xs);
+      border-radius: var(--radius-md);
+    }
+    
+    .auth-tab {
+      flex: 1;
+      padding: var(--spacing-md);
+      background: transparent;
+      border: none;
+      font-family: var(--font-heading);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+    }
+    
+    .auth-tab.active {
+      background: var(--gradient-primary);
+      color: var(--bg-primary);
+    }
+    
+    .auth-tab:hover:not(.active) {
+      color: var(--text-primary);
+    }
+    
+    /* Forms */
+    .auth-form {
+      display: none;
+    }
+    
+    .auth-form.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .form-title {
+      font-size: 1.5rem;
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    .form-subtitle {
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    /* OAuth Buttons */
+    .oauth-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .btn-oauth {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      padding: 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .btn-oauth:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--accent-green);
+    }
+    
+    .btn-oauth img {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-color);
+    }
+    
+    /* Password Field */
+    .password-field {
+      position: relative;
+    }
+    
+    .password-toggle {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      transition: color var(--transition-fast);
+    }
+    
+    .password-toggle:hover {
+      color: var(--accent-green);
+    }
+    
+    .password-field .form-input {
+      padding-right: 44px;
+    }
+    
+    /* Remember & Forgot */
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    .checkbox-label input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent-green);
+    }
+    
+    .forgot-link {
+      font-size: 0.9rem;
+      color: var(--accent-green);
+    }
+    
+    /* Submit Button */
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      font-size: 1rem;
+    }
+    
+    /* Password Strength */
+    .password-strength {
+      margin-top: var(--spacing-sm);
+    }
+    
+    .strength-bar {
+      display: flex;
+      gap: 4px;
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    .strength-segment {
+      flex: 1;
+      height: 4px;
+      background: var(--bg-tertiary);
+      border-radius: 2px;
+      transition: background var(--transition-fast);
+    }
+    
+    .strength-segment.weak { background: var(--accent-red); }
+    .strength-segment.fair { background: var(--accent-yellow); }
+    .strength-segment.good { background: var(--accent-blue); }
+    .strength-segment.strong { background: var(--accent-green); }
+    
+    .strength-text {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    /* Terms */
+    .terms-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: var(--spacing-lg);
+    }
+    
+    .terms-text a {
+      color: var(--accent-green);
+    }
+    
+    /* Success/Error Messages */
+    .alert {
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: 0.9rem;
+    }
+    
+    .alert-error {
+      background: rgba(255, 71, 87, 0.1);
+      border: 1px solid rgba(255, 71, 87, 0.3);
+      color: var(--accent-red);
+    }
+    
+    .alert-success {
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid rgba(0, 255, 136, 0.3);
+      color: var(--accent-green);
+    }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .auth-visual {
+        display: none;
+      }
+      
+      .auth-form-section {
+        flex: 1;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .auth-form-section {
+        padding: var(--spacing-lg);
+      }
+      
+      .form-options {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+    <!-- Visual Side -->
+    <div class="auth-visual">
+      <div class="auth-visual-content">
+        <div class="auth-logo">
+          <i class="fas fa-fire-flame-curved"></i>
+          <span>GamifyFit</span>
+        </div>
+        
+        <h2>Your Fitness Adventure Awaits</h2>
+        <p>Join thousands of users who have transformed their fitness journey into an epic quest.</p>
+        
+        <div class="auth-features">
+          <div class="auth-feature">
+            <div class="auth-feature-icon">
+              <i class="fas fa-trophy"></i>
+            </div>
+            <div class="auth-feature-text">
+              <h4>Earn XP & Level Up</h4>
+              <p>Complete challenges to gain experience</p>
+            </div>
+          </div>
+          
+          <div class="auth-feature">
+            <div class="auth-feature-icon">
+              <i class="fas fa-fire"></i>
+            </div>
+            <div class="auth-feature-text">
+              <h4>Build Streaks</h4>
+              <p>Stay consistent with daily rewards</p>
+            </div>
+          </div>
+          
+          <div class="auth-feature">
+            <div class="auth-feature-icon">
+              <i class="fas fa-medal"></i>
+            </div>
+            <div class="auth-feature-text">
+              <h4>Unlock Achievements</h4>
+              <p>Collect 100+ unique badges</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Form Side -->
+    <div class="auth-form-section">
+      <div class="auth-form-container">
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Login</button>
+          <button class="auth-tab" data-tab="register">Register</button>
+        </div>
+        
+        <!-- Login Form -->
+        <form class="auth-form active" id="login-form" data-form="login">
+          <h2 class="form-title">Welcome Back!</h2>
+          <p class="form-subtitle">Log in to continue your fitness journey</p>
+          
+          <div id="login-alert" class="alert" style="display: none;"></div>
+          
+          <div class="oauth-buttons">
+            <button type="button" class="btn-oauth" id="google-login">
+              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+              Continue with Google
+            </button>
+          </div>
+          
+          <div class="divider">or continue with email</div>
+          
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="login-email" placeholder="you@example.com" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="password-field">
+              <input type="password" class="form-input" id="login-password" placeholder="Enter your password" required>
+              <button type="button" class="password-toggle" onclick="togglePassword('login-password', this)">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="form-options">
+            <label class="checkbox-label">
+              <input type="checkbox" id="remember-me">
+              Remember me
+            </label>
+            <a href="#" class="forgot-link">Forgot password?</a>
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-submit">
+            <i class="fas fa-sign-in-alt"></i>
+            Log In
+          </button>
+        </form>
+        
+        <!-- Register Form -->
+        <form class="auth-form" id="register-form" data-form="register">
+          <h2 class="form-title">Create Account</h2>
+          <p class="form-subtitle">Start your fitness quest today</p>
+          
+          <div id="register-alert" class="alert" style="display: none;"></div>
+          
+          <div class="oauth-buttons">
+            <button type="button" class="btn-oauth" id="google-register">
+              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+              Sign up with Google
+            </button>
+          </div>
+          
+          <div class="divider">or register with email</div>
+          
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-input" id="register-name" placeholder="John Doe" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="register-email" placeholder="you@example.com" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="password-field">
+              <input type="password" class="form-input" id="register-password" placeholder="Create a strong password" required oninput="checkPasswordStrength(this.value)">
+              <button type="button" class="password-toggle" onclick="togglePassword('register-password', this)">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <div class="password-strength" id="password-strength" style="display: none;">
+              <div class="strength-bar">
+                <div class="strength-segment" id="seg1"></div>
+                <div class="strength-segment" id="seg2"></div>
+                <div class="strength-segment" id="seg3"></div>
+                <div class="strength-segment" id="seg4"></div>
+              </div>
+              <div class="strength-text" id="strength-text">Password strength</div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <div class="password-field">
+              <input type="password" class="form-input" id="register-confirm" placeholder="Confirm your password" required>
+              <button type="button" class="password-toggle" onclick="togglePassword('register-confirm', this)">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          
+          <label class="checkbox-label" style="margin-bottom: var(--spacing-lg);">
+            <input type="checkbox" id="agree-terms" required>
+            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+          </label>
+          
+          <button type="submit" class="btn btn-primary btn-submit">
+            <i class="fas fa-rocket"></i>
+            Create Account
+          </button>
+          
+          <p class="terms-text">
+            By signing up, you'll receive occasional emails about your progress and new features.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/pwa.js"></script>
+  <script>
+    // Tab switching
+    const tabs = document.querySelectorAll('.auth-tab');
+    const forms = document.querySelectorAll('.auth-form');
+    
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetForm = tab.dataset.tab;
+        
+        tabs.forEach(t => t.classList.remove('active'));
+        forms.forEach(f => f.classList.remove('active'));
+        
+        tab.classList.add('active');
+        document.querySelector(`[data-form="${targetForm}"]`).classList.add('active');
+        
+        // Update page title
+        document.title = `${targetForm === 'login' ? 'Login' : 'Register'} - GamifyFit`;
+      });
+    });
+    
+    // Check URL for mode
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('mode') === 'register') {
+      document.querySelector('[data-tab="register"]').click();
+    }
+    
+    // Password visibility toggle
+    function togglePassword(inputId, button) {
+      const input = document.getElementById(inputId);
+      const icon = button.querySelector('i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+    
+    // Password strength checker
+    function checkPasswordStrength(password) {
+      const strengthDiv = document.getElementById('password-strength');
+      const segments = [
+        document.getElementById('seg1'),
+        document.getElementById('seg2'),
+        document.getElementById('seg3'),
+        document.getElementById('seg4')
+      ];
+      const strengthText = document.getElementById('strength-text');
+      
+      if (password.length === 0) {
+        strengthDiv.style.display = 'none';
+        return;
+      }
+      
+      strengthDiv.style.display = 'block';
+      
+      let strength = 0;
+      
+      // Length check
+      if (password.length >= 8) strength++;
+      if (password.length >= 12) strength++;
+      
+      // Character variety
+      if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+      if (/\d/.test(password)) strength++;
+      if (/[^a-zA-Z0-9]/.test(password)) strength++;
+      
+      // Cap at 4
+      strength = Math.min(strength, 4);
+      
+      // Reset segments
+      segments.forEach(seg => seg.className = 'strength-segment');
+      
+      // Apply strength
+      const levels = ['weak', 'fair', 'good', 'strong'];
+      const texts = ['Weak', 'Fair', 'Good', 'Strong'];
+      
+      for (let i = 0; i < strength; i++) {
+        segments[i].classList.add(levels[Math.min(strength - 1, 3)]);
+      }
+      
+      strengthText.textContent = strength > 0 ? texts[strength - 1] : 'Too short';
+    }
+    
+    // Login form submission
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const alertDiv = document.getElementById('login-alert');
+      
+      // Show loading
+      const submitBtn = e.target.querySelector('.btn-submit');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+      submitBtn.disabled = true;
+      
+      // Simulate API call
+      setTimeout(() => {
+        // For demo, accept any login
+        alertDiv.className = 'alert alert-success';
+        alertDiv.innerHTML = '<i class="fas fa-check-circle"></i> Login successful! Redirecting...';
+        alertDiv.style.display = 'flex';
+        
+        // Store demo user
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', email);
+        
+        // Check if onboarding completed
+        const onboardingCompleted = localStorage.getItem('onboardingCompleted');
+        
+        setTimeout(() => {
+          if (onboardingCompleted) {
+            window.location.href = '/dashboard.html';
+          } else {
+            window.location.href = '/onboarding.html';
+          }
+        }, 1000);
+      }, 1500);
+    });
+    
+    // Register form submission
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('register-name').value;
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+      const confirm = document.getElementById('register-confirm').value;
+      const alertDiv = document.getElementById('register-alert');
+      
+      // Validation
+      if (password !== confirm) {
+        alertDiv.className = 'alert alert-error';
+        alertDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Passwords do not match';
+        alertDiv.style.display = 'flex';
+        return;
+      }
+      
+      if (password.length < 8) {
+        alertDiv.className = 'alert alert-error';
+        alertDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Password must be at least 8 characters';
+        alertDiv.style.display = 'flex';
+        return;
+      }
+      
+      // Show loading
+      const submitBtn = e.target.querySelector('.btn-submit');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+      submitBtn.disabled = true;
+      
+      // Simulate API call
+      setTimeout(() => {
+        alertDiv.className = 'alert alert-success';
+        alertDiv.innerHTML = '<i class="fas fa-check-circle"></i> Account created! Let\'s set up your profile...';
+        alertDiv.style.display = 'flex';
+        
+        // Store demo user
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userData', JSON.stringify({ fullName: name, email: email }));
+        
+        setTimeout(() => {
+          window.location.href = '/onboarding.html';
+        }, 1500);
+      }, 1500);
+    });
+    
+    // Google OAuth placeholder
+    document.getElementById('google-login').addEventListener('click', () => {
+      alert('Google OAuth requires server-side setup. This would redirect to Google\'s authentication flow.');
+    });
+    
+    document.getElementById('google-register').addEventListener('click', () => {
+      alert('Google OAuth requires server-side setup. This would redirect to Google\'s authentication flow.');
+    });
+  </script>
+</body>
+</html>

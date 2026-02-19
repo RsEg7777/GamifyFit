@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#00ff88">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32x32.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/global.css">
+  
+  <title>My Plan - GamifyFit</title>
+  
+  <style>
+    .plan-page {
+      min-height: 100vh;
+      padding-bottom: 100px;
+    }
+    
+    /* Header */
+    .plan-header {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+      padding: var(--spacing-xl) var(--spacing-lg);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .page-title {
+      font-size: 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    .page-title i {
+      color: var(--accent-green);
+    }
+    
+    .btn-regenerate {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+    
+    /* Week Selector */
+    .week-selector {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
+    }
+    
+    .week-nav-btn {
+      width: 40px;
+      height: 40px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .week-nav-btn:hover {
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+    }
+    
+    .week-info {
+      text-align: center;
+    }
+    
+    .week-label {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    
+    .week-dates {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    
+    /* Days Navigation */
+    .days-nav {
+      display: flex;
+      gap: var(--spacing-xs);
+      overflow-x: auto;
+      padding-bottom: var(--spacing-sm);
+    }
+    
+    .day-btn {
+      flex: 1;
+      min-width: 60px;
+      padding: var(--spacing-md);
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: center;
+    }
+    
+    .day-btn:hover {
+      border-color: var(--accent-green);
+    }
+    
+    .day-btn.active {
+      background: var(--gradient-primary);
+      border-color: transparent;
+    }
+    
+    .day-btn.active .day-name,
+    .day-btn.active .day-date {
+      color: var(--bg-primary);
+    }
+    
+    .day-btn.completed {
+      border-color: var(--accent-green);
+    }
+    
+    .day-btn.completed::after {
+      content: '✓';
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 18px;
+      height: 18px;
+      background: var(--accent-green);
+      color: var(--bg-primary);
+      border-radius: 50%;
+      font-size: 0.65rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .day-btn {
+      position: relative;
+    }
+    
+    .day-name {
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 2px;
+    }
+    
+    .day-date {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .day-type {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    
+    /* Main Content */
+    .plan-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--spacing-lg);
+    }
+    
+    /* Day Overview */
+    .day-overview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    .overview-card {
+      background: var(--bg-secondary);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      text-align: center;
+    }
+    
+    .overview-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 255, 136, 0.1);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--spacing-sm);
+      font-size: 1.25rem;
+      color: var(--accent-green);
+    }
+    
+    .overview-value {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .overview-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    
+    /* Workout Section */
+    .workout-section {
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .section-title {
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    .section-title i {
+      color: var(--accent-green);
+    }
+    
+    .workout-tag {
+      font-size: 0.75rem;
+      padding: 4px 12px;
+      background: rgba(0, 212, 255, 0.15);
+      color: var(--accent-blue);
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Exercise Cards */
+    .exercises-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+    
+    .exercise-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      transition: all var(--transition-fast);
+    }
+    
+    .exercise-card:hover {
+      border-color: var(--accent-green);
+    }
+    
+    .exercise-card.completed {
+      opacity: 0.7;
+    }
+    
+    .exercise-card.completed .exercise-header {
+      background: rgba(0, 255, 136, 0.1);
+    }
+    
+    .exercise-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-md) var(--spacing-lg);
+      background: var(--bg-tertiary);
+      cursor: pointer;
+    }
+    
+    .exercise-info {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    
+    .exercise-number {
+      width: 32px;
+      height: 32px;
+      background: var(--gradient-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--bg-primary);
+    }
+    
+    .exercise-card.completed .exercise-number {
+      background: var(--accent-green);
+    }
+    
+    .exercise-card.completed .exercise-number::after {
+      content: '✓';
+    }
+    
+    .exercise-card.completed .exercise-number span {
+      display: none;
+    }
+    
+    .exercise-name {
+      font-family: var(--font-heading);
+      font-weight: 600;
+    }
+    
+    .exercise-muscle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    
+    .exercise-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    
+    .exercise-sets {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    
+    .exercise-sets span {
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+    
+    .btn-expand {
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .btn-expand:hover {
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+    }
+    
+    .btn-expand i {
+      transition: transform var(--transition-fast);
+    }
+    
+    .exercise-card.expanded .btn-expand i {
+      transform: rotate(180deg);
+    }
+    
+    /* Exercise Details */
+    .exercise-details {
+      display: none;
+      padding: var(--spacing-lg);
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .exercise-card.expanded .exercise-details {
+      display: block;
+    }
+    
+    .sets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .set-card {
+      background: var(--bg-tertiary);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      text-align: center;
+      border: 1px solid transparent;
+      transition: all var(--transition-fast);
+    }
+    
+    .set-card.completed {
+      border-color: var(--accent-green);
+      background: rgba(0, 255, 136, 0.1);
+    }
+    
+    .set-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    .set-value {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .set-unit {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    
+    .exercise-tips {
+      background: rgba(0, 212, 255, 0.1);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--accent-blue);
+    }
+    
+    .tips-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-blue);
+      margin-bottom: var(--spacing-xs);
+    }
+    
+    .tips-text {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    
+    .exercise-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: var(--spacing-lg);
+    }
+    
+    .rest-timer {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    
+    .rest-timer i {
+      color: var(--accent-yellow);
+    }
+    
+    .btn-complete-exercise {
+      padding: var(--spacing-sm) var(--spacing-lg);
+    }
+    
+    /* Rest Day */
+    .rest-day {
+      text-align: center;
+      padding: var(--spacing-3xl);
+    }
+    
+    .rest-day-icon {
+      width: 100px;
+      height: 100px;
+      background: rgba(139, 92, 246, 0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--spacing-lg);
+      font-size: 3rem;
+    }
+    
+    .rest-day h2 {
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .rest-day p {
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-xl);
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .rest-activities {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-md);
+      flex-wrap: wrap;
+    }
+    
+    .rest-activity {
+      padding: var(--spacing-md) var(--spacing-lg);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      color: var(--text-secondary);
+    }
+    
+    .rest-activity i {
+      color: var(--accent-purple);
+    }
+    
+    /* Complete Day Button */
+    .complete-day-section {
+      text-align: center;
+      padding: var(--spacing-xl);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+    }
+    
+    .day-progress {
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .day-progress-text {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .day-progress-bar {
+      height: 10px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    
+    .day-progress-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      transition: width 0.5s ease;
+    }
+    
+    .btn-complete-day {
+      padding: var(--spacing-md) var(--spacing-2xl);
+      font-size: 1rem;
+    }
+    
+    .xp-reward {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-md);
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+    
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      display: flex;
+      justify-content: space-around;
+      z-index: 100;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.7rem;
+      padding: var(--spacing-xs);
+      transition: color var(--transition-fast);
+    }
+    
+    .nav-item i {
+      font-size: 1.25rem;
+    }
+    
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--accent-green);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-top {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: flex-start;
+      }
+      
+      .week-selector {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .day-btn {
+        min-width: 50px;
+        padding: var(--spacing-sm);
+      }
+      
+      .day-overview {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+      }
+      
+      .exercise-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+      }
+      
+      .exercise-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="plan-page">
+    <!-- Header -->
+    <header class="plan-header">
+      <div class="header-content">
+        <div class="header-top">
+          <h1 class="page-title">
+            <i class="fas fa-calendar-check"></i>
+            My Workout Plan
+          </h1>
+          <button class="btn btn-outline btn-regenerate" onclick="regeneratePlan()">
+            <i class="fas fa-wand-magic-sparkles"></i>
+            Regenerate Plan
+          </button>
+        </div>
+        
+        <div class="week-selector">
+          <button class="week-nav-btn" onclick="changeWeek(-1)">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          
+          <div class="week-info">
+            <div class="week-label" id="week-label">Week 3</div>
+            <div class="week-dates" id="week-dates">Jan 15 - Jan 21, 2024</div>
+          </div>
+          
+          <button class="week-nav-btn" onclick="changeWeek(1)">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        
+        <div class="days-nav" id="days-nav">
+          <!-- Days will be injected via JS -->
+        </div>
+      </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="plan-content" id="plan-content">
+      <!-- Content will be injected via JS -->
+    </main>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="/dashboard.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="/challenges.html" class="nav-item">
+        <i class="fas fa-crosshairs"></i>
+        <span>Challenges</span>
+      </a>
+      <a href="/plan.html" class="nav-item active">
+        <i class="fas fa-calendar-check"></i>
+        <span>Plan</span>
+      </a>
+      <a href="/progress.html" class="nav-item">
+        <i class="fas fa-chart-line"></i>
+        <span>Progress</span>
+      </a>
+      <a href="/profile.html" class="nav-item">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="/js/pwa.js"></script>
+  <script>
+    // Weekly plan data
+    const weeklyPlan = {
+      weekNumber: 3,
+      startDate: new Date('2024-01-15'),
+      days: [
+        {
+          name: 'Mon',
+          date: 15,
+          type: 'Upper Body',
+          completed: true,
+          totalXp: 75,
+          exercises: [
+            {
+              name: 'Bench Press',
+              muscle: 'Chest',
+              sets: [
+                { reps: 12, weight: 60, unit: 'kg' },
+                { reps: 10, weight: 70, unit: 'kg' },
+                { reps: 8, weight: 80, unit: 'kg' },
+                { reps: 8, weight: 80, unit: 'kg' }
+              ],
+              rest: 90,
+              tips: 'Keep your feet flat on the floor and maintain a slight arch in your lower back. Grip the bar slightly wider than shoulder-width.',
+              completed: true
+            },
+            {
+              name: 'Incline Dumbbell Press',
+              muscle: 'Upper Chest',
+              sets: [
+                { reps: 12, weight: 20, unit: 'kg' },
+                { reps: 10, weight: 24, unit: 'kg' },
+                { reps: 10, weight: 24, unit: 'kg' }
+              ],
+              rest: 60,
+              tips: 'Set the bench to a 30-45 degree angle. Keep your elbows at a 45-degree angle to your body.',
+              completed: true
+            },
+            {
+              name: 'Seated Shoulder Press',
+              muscle: 'Shoulders',
+              sets: [
+                { reps: 12, weight: 16, unit: 'kg' },
+                { reps: 10, weight: 18, unit: 'kg' },
+                { reps: 10, weight: 18, unit: 'kg' }
+              ],
+              rest: 60,
+              tips: 'Keep your core tight and back against the pad. Press straight up without locking your elbows.',
+              completed: true
+            },
+            {
+              name: 'Tricep Dips',
+              muscle: 'Triceps',
+              sets: [
+                { reps: 15, weight: 0, unit: 'bodyweight' },
+                { reps: 12, weight: 0, unit: 'bodyweight' },
+                { reps: 10, weight: 0, unit: 'bodyweight' }
+              ],
+              rest: 45,
+              tips: 'Keep your elbows close to your body. Lower until your upper arms are parallel to the floor.',
+              completed: true
+            }
+          ]
+        },
+        {
+          name: 'Tue',
+          date: 16,
+          type: 'Lower Body',
+          completed: true,
+          totalXp: 80,
+          exercises: [
+            {
+              name: 'Barbell Squats',
+              muscle: 'Quads, Glutes',
+              sets: [
+                { reps: 12, weight: 60, unit: 'kg' },
+                { reps: 10, weight: 80, unit: 'kg' },
+                { reps: 8, weight: 90, unit: 'kg' },
+                { reps: 8, weight: 90, unit: 'kg' }
+              ],
+              rest: 120,
+              tips: 'Keep your chest up and core braced. Push through your heels and keep knees tracking over toes.',
+              completed: true
+            },
+            {
+              name: 'Romanian Deadlifts',
+              muscle: 'Hamstrings, Glutes',
+              sets: [
+                { reps: 12, weight: 50, unit: 'kg' },
+                { reps: 10, weight: 60, unit: 'kg' },
+                { reps: 10, weight: 60, unit: 'kg' }
+              ],
+              rest: 90,
+              tips: 'Maintain a slight bend in your knees. Hinge at the hips and keep the bar close to your legs.',
+              completed: true
+            },
+            {
+              name: 'Leg Press',
+              muscle: 'Quads',
+              sets: [
+                { reps: 15, weight: 100, unit: 'kg' },
+                { reps: 12, weight: 120, unit: 'kg' },
+                { reps: 12, weight: 120, unit: 'kg' }
+              ],
+              rest: 60,
+              tips: 'Place feet shoulder-width apart. Don\'t lock your knees at the top of the movement.',
+              completed: true
+            },
+            {
+              name: 'Calf Raises',
+              muscle: 'Calves',
+              sets: [
+                { reps: 20, weight: 40, unit: 'kg' },
+                { reps: 15, weight: 50, unit: 'kg' },
+                { reps: 15, weight: 50, unit: 'kg' }
+              ],
+              rest: 45,
+              tips: 'Rise up on the balls of your feet, squeezing at the top. Lower slowly for full stretch.',
+              completed: true
+            }
+          ]
+        },
+        {
+          name: 'Wed',
+          date: 17,
+          type: 'Rest Day',
+          completed: true,
+          isRest: true,
+          totalXp: 20
+        },
+        {
+          name: 'Thu',
+          date: 18,
+          type: 'Push Day',
+          completed: false,
+          totalXp: 70,
+          exercises: [
+            {
+              name: 'Overhead Press',
+              muscle: 'Shoulders',
+              sets: [
+                { reps: 10, weight: 40, unit: 'kg' },
+                { reps: 8, weight: 45, unit: 'kg' },
+                { reps: 8, weight: 45, unit: 'kg' },
+                { reps: 6, weight: 50, unit: 'kg' }
+              ],
+              rest: 90,
+              tips: 'Brace your core and squeeze your glutes. Press straight up, moving your head back slightly.',
+              completed: true
+            },
+            {
+              name: 'Dumbbell Flyes',
+              muscle: 'Chest',
+              sets: [
+                { reps: 12, weight: 14, unit: 'kg' },
+                { reps: 12, weight: 14, unit: 'kg' },
+                { reps: 10, weight: 16, unit: 'kg' }
+              ],
+              rest: 60,
+              tips: 'Keep a slight bend in your elbows throughout. Lower until you feel a stretch in your chest.',
+              completed: false
+            },
+            {
+              name: 'Lateral Raises',
+              muscle: 'Side Delts',
+              sets: [
+                { reps: 15, weight: 8, unit: 'kg' },
+                { reps: 12, weight: 10, unit: 'kg' },
+                { reps: 12, weight: 10, unit: 'kg' }
+              ],
+              rest: 45,
+              tips: 'Keep a slight bend in elbows. Lead with your elbows, not your hands.',
+              completed: false
+            },
+            {
+              name: 'Cable Tricep Pushdowns',
+              muscle: 'Triceps',
+              sets: [
+                { reps: 15, weight: 25, unit: 'kg' },
+                { reps: 12, weight: 30, unit: 'kg' },
+                { reps: 12, weight: 30, unit: 'kg' }
+              ],
+              rest: 45,
+              tips: 'Keep your elbows pinned to your sides. Fully extend at the bottom and squeeze.',
+              completed: false
+            }
+          ]
+        },
+        {
+          name: 'Fri',
+          date: 19,
+          type: 'Pull Day',
+          completed: false,
+          totalXp: 75,
+          exercises: [
+            {
+              name: 'Deadlifts',
+              muscle: 'Back, Hamstrings',
+              sets: [
+                { reps: 8, weight: 80, unit: 'kg' },
+                { reps: 6, weight: 100, unit: 'kg' },
+                { reps: 5, weight: 110, unit: 'kg' },
+                { reps: 5, weight: 110, unit: 'kg' }
+              ],
+              rest: 180,
+              tips: 'Keep your back flat and core tight. Push through your heels and keep the bar close to your body.',
+              completed: false
+            },
+            {
+              name: 'Pull-Ups',
+              muscle: 'Lats, Biceps',
+              sets: [
+                { reps: 10, weight: 0, unit: 'bodyweight' },
+                { reps: 8, weight: 0, unit: 'bodyweight' },
+                { reps: 8, weight: 0, unit: 'bodyweight' }
+              ],
+              rest: 90,
+              tips: 'Start from a dead hang. Pull your chest towards the bar, squeezing your shoulder blades.',
+              completed: false
+            },
+            {
+              name: 'Barbell Rows',
+              muscle: 'Back',
+              sets: [
+                { reps: 12, weight: 50, unit: 'kg' },
+                { reps: 10, weight: 60, unit: 'kg' },
+                { reps: 10, weight: 60, unit: 'kg' }
+              ],
+              rest: 60,
+              tips: 'Bend at the hips about 45 degrees. Pull the bar to your lower chest, squeezing your back.',
+              completed: false
+            },
+            {
+              name: 'Bicep Curls',
+              muscle: 'Biceps',
+              sets: [
+                { reps: 12, weight: 12, unit: 'kg' },
+                { reps: 10, weight: 14, unit: 'kg' },
+                { reps: 10, weight: 14, unit: 'kg' }
+              ],
+              rest: 45,
+              tips: 'Keep your elbows pinned to your sides. Control the negative portion of the movement.',
+              completed: false
+            }
+          ]
+        },
+        {
+          name: 'Sat',
+          date: 20,
+          type: 'Full Body',
+          completed: false,
+          totalXp: 85,
+          exercises: [
+            {
+              name: 'Front Squats',
+              muscle: 'Quads, Core',
+              sets: [
+                { reps: 10, weight: 50, unit: 'kg' },
+                { reps: 8, weight: 60, unit: 'kg' },
+                { reps: 8, weight: 60, unit: 'kg' }
+              ],
+              rest: 90,
+              tips: 'Keep elbows high and core tight. Maintain an upright torso throughout the movement.',
+              completed: false
+            },
+            {
+              name: 'Push-Ups',
+              muscle: 'Chest, Triceps',
+              sets: [
+                { reps: 20, weight: 0, unit: 'bodyweight' },
+                { reps: 18, weight: 0, unit: 'bodyweight' },
+                { reps: 15, weight: 0, unit: 'bodyweight' }
+              ],
+              rest: 45,
+              tips: 'Keep your body in a straight line. Lower until your chest nearly touches the floor.',
+              completed: false
+            },
+            {
+              name: 'Dumbbell Lunges',
+              muscle: 'Quads, Glutes',
+              sets: [
+                { reps: 12, weight: 16, unit: 'kg' },
+                { reps: 12, weight: 16, unit: 'kg' },
+                { reps: 10, weight: 18, unit: 'kg' }
+              ],
+              rest: 60,
+              tips: 'Take a big step forward. Lower until your back knee nearly touches the ground.',
+              completed: false
+            },
+            {
+              name: 'Plank',
+              muscle: 'Core',
+              sets: [
+                { reps: 60, weight: 0, unit: 'seconds' },
+                { reps: 45, weight: 0, unit: 'seconds' },
+                { reps: 45, weight: 0, unit: 'seconds' }
+              ],
+              rest: 30,
+              tips: 'Keep your body in a straight line from head to heels. Don\'t let your hips sag or pike.',
+              completed: false
+            }
+          ]
+        },
+        {
+          name: 'Sun',
+          date: 21,
+          type: 'Active Recovery',
+          completed: false,
+          isRest: true,
+          totalXp: 25
+        }
+      ]
+    };
+    
+    let currentDayIndex = 3; // Thursday (0-indexed)
+    
+    // Render days navigation
+    function renderDaysNav() {
+      const nav = document.getElementById('days-nav');
+      nav.innerHTML = weeklyPlan.days.map((day, index) => `
+        <button class="day-btn ${index === currentDayIndex ? 'active' : ''} ${day.completed ? 'completed' : ''}" 
+                onclick="selectDay(${index})">
+          <div class="day-name">${day.name}</div>
+          <div class="day-date">${day.date}</div>
+          <div class="day-type">${day.type}</div>
+        </button>
+      `).join('');
+    }
+    
+    // Select day
+    function selectDay(index) {
+      currentDayIndex = index;
+      renderDaysNav();
+      renderDayContent();
+    }
+    
+    // Render day content
+    function renderDayContent() {
+      const content = document.getElementById('plan-content');
+      const day = weeklyPlan.days[currentDayIndex];
+      
+      if (day.isRest) {
+        content.innerHTML = renderRestDay(day);
+      } else {
+        content.innerHTML = renderWorkoutDay(day);
+      }
+    }
+    
+    // Render rest day
+    function renderRestDay(day) {
+      return `
+        <div class="rest-day">
+          <div class="rest-day-icon">😴</div>
+          <h2>${day.type}</h2>
+          <p>Your body needs time to recover and grow stronger. Take it easy today, but stay active with light activities.</p>
+          
+          <div class="rest-activities">
+            <div class="rest-activity">
+              <i class="fas fa-walking"></i>
+              Light Walk
+            </div>
+            <div class="rest-activity">
+              <i class="fas fa-spa"></i>
+              Stretching
+            </div>
+            <div class="rest-activity">
+              <i class="fas fa-hot-tub"></i>
+              Foam Rolling
+            </div>
+            <div class="rest-activity">
+              <i class="fas fa-brain"></i>
+              Meditation
+            </div>
+          </div>
+          
+          ${!day.completed ? `
+            <div style="margin-top: var(--spacing-2xl);">
+              <button class="btn btn-primary" onclick="completeRestDay()">
+                <i class="fas fa-check"></i>
+                Mark Day Complete
+              </button>
+              <div class="xp-reward">
+                <i class="fas fa-bolt"></i>
+                +${day.totalXp} XP
+              </div>
+            </div>
+          ` : `
+            <div style="margin-top: var(--spacing-2xl); color: var(--accent-green);">
+              <i class="fas fa-check-circle"></i> Day Completed! (+${day.totalXp} XP)
+            </div>
+          `}
+        </div>
+      `;
+    }
+    
+    // Render workout day
+    function renderWorkoutDay(day) {
+      const completedExercises = day.exercises.filter(e => e.completed).length;
+      const totalExercises = day.exercises.length;
+      const progress = Math.round((completedExercises / totalExercises) * 100);
+      
+      return `
+        <!-- Day Overview -->
+        <div class="day-overview">
+          <div class="overview-card">
+            <div class="overview-icon">
+              <i class="fas fa-dumbbell"></i>
+            </div>
+            <div class="overview-value">${day.exercises.length}</div>
+            <div class="overview-label">Exercises</div>
+          </div>
+          
+          <div class="overview-card">
+            <div class="overview-icon">
+              <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="overview-value">${day.exercises.reduce((sum, e) => sum + e.sets.length, 0)}</div>
+            <div class="overview-label">Total Sets</div>
+          </div>
+          
+          <div class="overview-card">
+            <div class="overview-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="overview-value">~45</div>
+            <div class="overview-label">Minutes</div>
+          </div>
+          
+          <div class="overview-card">
+            <div class="overview-icon">
+              <i class="fas fa-fire"></i>
+            </div>
+            <div class="overview-value">~350</div>
+            <div class="overview-label">Calories</div>
+          </div>
+        </div>
+        
+        <!-- Workout Section -->
+        <section class="workout-section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <i class="fas fa-list-check"></i>
+              Today's Exercises
+            </h2>
+            <span class="workout-tag">${day.type}</span>
+          </div>
+          
+          <div class="exercises-list">
+            ${day.exercises.map((exercise, index) => renderExerciseCard(exercise, index)).join('')}
+          </div>
+        </section>
+        
+        <!-- Complete Day Section -->
+        <div class="complete-day-section">
+          <div class="day-progress">
+            <div class="day-progress-text">
+              ${completedExercises} of ${totalExercises} exercises completed
+            </div>
+            <div class="day-progress-bar">
+              <div class="day-progress-fill" style="width: ${progress}%"></div>
+            </div>
+          </div>
+          
+          <button class="btn btn-primary btn-complete-day" 
+                  onclick="completeDay()" 
+                  ${progress < 100 ? 'disabled' : ''}>
+            <i class="fas fa-trophy"></i>
+            Complete Workout
+          </button>
+          
+          <div class="xp-reward">
+            <i class="fas fa-bolt"></i>
+            +${day.totalXp} XP on completion
+          </div>
+        </div>
+      `;
+    }
+    
+    // Render exercise card
+    function renderExerciseCard(exercise, index) {
+      return `
+        <div class="exercise-card ${exercise.completed ? 'completed' : ''}" id="exercise-${index}">
+          <div class="exercise-header" onclick="toggleExercise(${index})">
+            <div class="exercise-info">
+              <div class="exercise-number">
+                <span>${index + 1}</span>
+              </div>
+              <div>
+                <div class="exercise-name">${exercise.name}</div>
+                <div class="exercise-muscle">${exercise.muscle}</div>
+              </div>
+            </div>
+            
+            <div class="exercise-actions">
+              <div class="exercise-sets">
+                <span>${exercise.sets.length}</span> sets × <span>${exercise.sets[0].reps}</span> ${exercise.sets[0].unit === 'seconds' ? 'sec' : 'reps'}
+              </div>
+              <button class="btn-expand">
+                <i class="fas fa-chevron-down"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="exercise-details">
+            <div class="sets-grid">
+              ${exercise.sets.map((set, setIndex) => `
+                <div class="set-card ${exercise.completed ? 'completed' : ''}">
+                  <div class="set-label">Set ${setIndex + 1}</div>
+                  <div class="set-value">${set.reps}</div>
+                  <div class="set-unit">
+                    ${set.weight > 0 ? `${set.weight} ${set.unit}` : set.unit}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            
+            <div class="exercise-tips">
+              <div class="tips-title">
+                <i class="fas fa-lightbulb"></i> Pro Tips
+              </div>
+              <p class="tips-text">${exercise.tips}</p>
+            </div>
+            
+            <div class="exercise-footer">
+              <div class="rest-timer">
+                <i class="fas fa-hourglass-half"></i>
+                Rest: ${exercise.rest} seconds between sets
+              </div>
+              
+              ${!exercise.completed ? `
+                <button class="btn btn-primary btn-complete-exercise" onclick="completeExercise(${index})">
+                  <i class="fas fa-check"></i>
+                  Complete
+                </button>
+              ` : `
+                <span style="color: var(--accent-green); font-weight: 600;">
+                  <i class="fas fa-check-circle"></i> Completed
+                </span>
+              `}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    
+    // Toggle exercise expanded state
+    function toggleExercise(index) {
+      const card = document.getElementById(`exercise-${index}`);
+      card.classList.toggle('expanded');
+    }
+    
+    // Complete exercise
+    function completeExercise(index) {
+      const day = weeklyPlan.days[currentDayIndex];
+      day.exercises[index].completed = true;
+      renderDayContent();
+      
+      if (window.PWAManager) {
+        window.PWAManager.showToast('Exercise completed! 💪', 'success');
+      }
+    }
+    
+    // Complete day
+    function completeDay() {
+      const day = weeklyPlan.days[currentDayIndex];
+      day.completed = true;
+      renderDaysNav();
+      renderDayContent();
+      
+      if (window.PWAManager) {
+        window.PWAManager.showToast(`Workout complete! +${day.totalXp} XP earned! 🎉`, 'success');
+      }
+    }
+    
+    // Complete rest day
+    function completeRestDay() {
+      const day = weeklyPlan.days[currentDayIndex];
+      day.completed = true;
+      renderDaysNav();
+      renderDayContent();
+      
+      if (window.PWAManager) {
+        window.PWAManager.showToast(`Rest day logged! +${day.totalXp} XP earned! 😴`, 'success');
+      }
+    }
+    
+    // Change week
+    function changeWeek(direction) {
+      weeklyPlan.weekNumber += direction;
+      document.getElementById('week-label').textContent = `Week ${weeklyPlan.weekNumber}`;
+      // In a real app, this would fetch the new week's data
+    }
+    
+    // Regenerate plan
+    function regeneratePlan() {
+      if (confirm('Are you sure you want to regenerate your workout plan? This will create a new plan based on your goals.')) {
+        alert('Plan regenerated! Your new personalized workout plan is ready.');
+        // In a real app, this would call the plan generator
+      }
+    }
+    
+    // Initial render
+    renderDaysNav();
+    renderDayContent();
+  </script>
+</body>
+</html>

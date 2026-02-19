@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GamifyFit - Complete daily fitness challenges, earn XP, level up, and track your calorie burn in this gamified fitness app.">
+  <meta name="keywords" content="fitness, workout, challenges, gamification, health, exercise, PWA">
+  <meta name="author" content="GamifyFit">
+  
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#00ff88">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="GamifyFit">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/icon-16x16.png">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192x192.png">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/global.css">
+  
+  <title>GamifyFit - Gamified Fitness & Daily Challenges</title>
+  
+  <style>
+    /* Landing Page Specific Styles */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 70px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 80%;
+      height: 150%;
+      background: radial-gradient(ellipse, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+      animation: heroGlow 8s ease-in-out infinite alternate;
+    }
+    
+    @keyframes heroGlow {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-5%, 5%) scale(1.1); }
+    }
+    
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-3xl);
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .hero-text h1 {
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .hero-text h1 span {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .hero-text p {
+      font-size: 1.2rem;
+      margin-bottom: var(--spacing-xl);
+      max-width: 500px;
+    }
+    
+    .hero-buttons {
+      display: flex;
+      gap: var(--spacing-md);
+      flex-wrap: wrap;
+    }
+    
+    .hero-stats {
+      display: flex;
+      gap: var(--spacing-2xl);
+      margin-top: var(--spacing-2xl);
+    }
+    
+    .hero-stat-item {
+      text-align: center;
+    }
+    
+    .hero-stat-value {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .hero-stat-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    
+    .hero-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .hero-phone {
+      width: 280px;
+      height: 580px;
+      background: var(--bg-secondary);
+      border-radius: 40px;
+      border: 3px solid var(--border-color);
+      padding: 12px;
+      position: relative;
+      box-shadow: var(--shadow-lg), 0 0 60px rgba(0, 255, 136, 0.2);
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .hero-phone-screen {
+      width: 100%;
+      height: 100%;
+      background: var(--bg-primary);
+      border-radius: 30px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .hero-phone-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 25px;
+      background: var(--bg-secondary);
+      border-radius: 0 0 15px 15px;
+    }
+    
+    .hero-phone-content {
+      padding: 40px 16px 16px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .phone-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .phone-avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--gradient-primary);
+      border-radius: 50%;
+    }
+    
+    .phone-level {
+      background: var(--bg-tertiary);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+    
+    .phone-xp-bar {
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .phone-xp-fill {
+      width: 65%;
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: 4px;
+    }
+    
+    .phone-challenge-card {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+    }
+    
+    .phone-challenge-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .phone-challenge-xp {
+      font-size: 0.7rem;
+      color: var(--accent-green);
+    }
+    
+    .phone-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      flex: 1;
+    }
+    
+    .phone-stat-card {
+      background: var(--bg-tertiary);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+    
+    .phone-stat-value {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    
+    .phone-stat-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+    
+    .floating-badge {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: var(--bg-secondary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--accent-green);
+      box-shadow: var(--shadow-glow);
+      animation: float 4s ease-in-out infinite;
+    }
+    
+    .floating-badge:nth-child(1) {
+      top: 10%;
+      left: -30px;
+      animation-delay: 0s;
+    }
+    
+    .floating-badge:nth-child(2) {
+      top: 30%;
+      right: -20px;
+      animation-delay: 1s;
+    }
+    
+    .floating-badge:nth-child(3) {
+      bottom: 20%;
+      left: -40px;
+      animation-delay: 2s;
+    }
+    
+    .floating-badge i {
+      font-size: 1.5rem;
+      color: var(--accent-green);
+    }
+    
+    /* Features Section */
+    .features {
+      background: var(--bg-secondary);
+      position: relative;
+    }
+    
+    .features::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: var(--spacing-3xl);
+    }
+    
+    .section-header h2 {
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .section-header p {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--spacing-lg);
+    }
+    
+    .feature-card {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      border: 1px solid var(--border-color);
+      transition: all var(--transition-normal);
+      text-align: center;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--accent-green);
+      box-shadow: var(--shadow-glow);
+    }
+    
+    .feature-icon {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto var(--spacing-lg);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+    }
+    
+    .feature-icon.green { background: rgba(0, 255, 136, 0.15); color: var(--accent-green); }
+    .feature-icon.blue { background: rgba(0, 212, 255, 0.15); color: var(--accent-blue); }
+    .feature-icon.purple { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); }
+    .feature-icon.orange { background: rgba(255, 107, 53, 0.15); color: var(--accent-orange); }
+    .feature-icon.yellow { background: rgba(255, 215, 0, 0.15); color: var(--accent-yellow); }
+    .feature-icon.pink { background: rgba(255, 107, 203, 0.15); color: var(--accent-pink); }
+    
+    .feature-card h3 {
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    /* How It Works */
+    .how-it-works {
+      position: relative;
+    }
+    
+    .steps-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-lg);
+      position: relative;
+    }
+    
+    .steps-container::before {
+      content: '';
+      position: absolute;
+      top: 50px;
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+      z-index: 0;
+    }
+    
+    .step-card {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .step-number {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto var(--spacing-lg);
+      background: var(--gradient-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--bg-primary);
+      box-shadow: var(--shadow-glow);
+    }
+    
+    .step-card h4 {
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    /* Gamification Preview */
+    .gamification-preview {
+      background: var(--bg-secondary);
+    }
+    
+    .gamification-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-3xl);
+      align-items: center;
+    }
+    
+    .gamification-visual {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-md);
+    }
+    
+    .badge-preview {
+      aspect-ratio: 1;
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-md);
+      transition: all var(--transition-normal);
+    }
+    
+    .badge-preview:hover {
+      transform: scale(1.05);
+      border-color: var(--accent-green);
+    }
+    
+    .badge-preview.earned {
+      border-color: var(--accent-yellow);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    }
+    
+    .badge-preview.locked {
+      opacity: 0.5;
+      filter: grayscale(1);
+    }
+    
+    .badge-preview i {
+      font-size: 2rem;
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .badge-preview span {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    
+    .gamification-content h2 {
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .gamification-list {
+      list-style: none;
+      margin-bottom: var(--spacing-xl);
+    }
+    
+    .gamification-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+      padding: var(--spacing-md);
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+    }
+    
+    .gamification-list li i {
+      color: var(--accent-green);
+      font-size: 1.25rem;
+      margin-top: 2px;
+    }
+    
+    /* CTA Section */
+    .cta {
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .cta::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 200%;
+      background: radial-gradient(ellipse, rgba(0, 255, 136, 0.1) 0%, transparent 50%);
+    }
+    
+    .cta-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .cta h2 {
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .cta p {
+      max-width: 600px;
+      margin: 0 auto var(--spacing-xl);
+    }
+    
+    .cta-buttons {
+      display: flex;
+      gap: var(--spacing-md);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    /* Footer */
+    .footer {
+      background: var(--bg-secondary);
+      padding: var(--spacing-3xl) 0 var(--spacing-lg);
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: var(--spacing-2xl);
+      margin-bottom: var(--spacing-2xl);
+    }
+    
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .footer-brand span {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .footer-about p {
+      font-size: 0.9rem;
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .footer-social {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+    
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+    
+    .footer-social a:hover {
+      background: var(--accent-green);
+      color: var(--bg-primary);
+    }
+    
+    .footer-column h4 {
+      margin-bottom: var(--spacing-lg);
+      font-size: 1rem;
+    }
+    
+    .footer-links {
+      list-style: none;
+    }
+    
+    .footer-links li {
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .footer-links a {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      transition: color var(--transition-fast);
+    }
+    
+    .footer-links a:hover {
+      color: var(--accent-green);
+    }
+    
+    .footer-bottom {
+      padding-top: var(--spacing-lg);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--spacing-md);
+    }
+    
+    .footer-bottom p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    
+    /* Install Banner */
+    #install-banner {
+      background: linear-gradient(90deg, var(--bg-secondary), var(--bg-tertiary));
+    }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      
+      .hero-text p {
+        margin: 0 auto var(--spacing-xl);
+      }
+      
+      .hero-buttons {
+        justify-content: center;
+      }
+      
+      .hero-stats {
+        justify-content: center;
+      }
+      
+      .hero-visual {
+        order: -1;
+      }
+      
+      .hero-phone {
+        width: 240px;
+        height: 500px;
+      }
+      
+      .steps-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .steps-container::before {
+        display: none;
+      }
+      
+      .gamification-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .gamification-visual {
+        order: -1;
+      }
+      
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .hero {
+        padding-top: 100px;
+        min-height: auto;
+        padding-bottom: var(--spacing-3xl);
+      }
+      
+      .hero-phone {
+        width: 200px;
+        height: 420px;
+      }
+      
+      .floating-badge {
+        display: none;
+      }
+      
+      .steps-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="navbar-brand">
+        <i class="fas fa-fire-flame-curved" style="color: var(--accent-green);"></i>
+        <span>GamifyFit</span>
+      </a>
+      
+      <ul class="navbar-menu">
+        <li><a href="#features" class="navbar-link">Features</a></li>
+        <li><a href="#how-it-works" class="navbar-link">How It Works</a></li>
+        <li><a href="#gamification" class="navbar-link">Gamification</a></li>
+        <li><a href="/challenges.html" class="navbar-link">Challenges</a></li>
+      </ul>
+      
+      <div class="navbar-actions">
+        <a href="/auth.html" class="btn btn-ghost">Login</a>
+        <a href="/auth.html?mode=register" class="btn btn-primary">Get Started</a>
+        <button class="btn btn-secondary btn-icon" data-pwa-install style="display: none;" aria-label="Install App">
+          <i class="fas fa-download"></i>
+        </button>
+      </div>
+      
+      <button class="navbar-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1>Level Up Your <span>Fitness Journey</span></h1>
+          <p>Complete daily challenges, earn XP, unlock achievements, and compete with friends. Transform your workouts into an epic adventure.</p>
+          
+          <div class="hero-buttons">
+            <a href="/auth.html?mode=register" class="btn btn-primary btn-lg">
+              <i class="fas fa-rocket"></i>
+              Start Your Quest
+            </a>
+            <a href="#features" class="btn btn-outline btn-lg">
+              <i class="fas fa-play"></i>
+              Learn More
+            </a>
+          </div>
+          
+          <div class="hero-stats">
+            <div class="hero-stat-item">
+              <div class="hero-stat-value">50K+</div>
+              <div class="hero-stat-label">Active Users</div>
+            </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-value">1M+</div>
+              <div class="hero-stat-label">Challenges Completed</div>
+            </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-value">100+</div>
+              <div class="hero-stat-label">Unique Badges</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="hero-visual">
+          <div class="floating-badge">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <div class="floating-badge">
+            <i class="fas fa-fire"></i>
+          </div>
+          <div class="floating-badge">
+            <i class="fas fa-bolt"></i>
+          </div>
+          
+          <div class="hero-phone">
+            <div class="hero-phone-screen">
+              <div class="hero-phone-notch"></div>
+              <div class="hero-phone-content">
+                <div class="phone-header">
+                  <div class="phone-avatar"></div>
+                  <div class="phone-level">Level 12</div>
+                </div>
+                
+                <div class="phone-xp-bar">
+                  <div class="phone-xp-fill"></div>
+                </div>
+                
+                <div class="phone-challenge-card">
+                  <div class="phone-challenge-title">🏃 10K Steps Challenge</div>
+                  <div class="phone-challenge-xp">+75 XP</div>
+                </div>
+                
+                <div class="phone-stats-grid">
+                  <div class="phone-stat-card">
+                    <div class="phone-stat-value" style="color: var(--accent-green);">8,432</div>
+                    <div class="phone-stat-label">Steps</div>
+                  </div>
+                  <div class="phone-stat-card">
+                    <div class="phone-stat-value" style="color: var(--accent-orange);">486</div>
+                    <div class="phone-stat-label">Calories</div>
+                  </div>
+                  <div class="phone-stat-card">
+                    <div class="phone-stat-value" style="color: var(--accent-blue);">42</div>
+                    <div class="phone-stat-label">Active Min</div>
+                  </div>
+                  <div class="phone-stat-card">
+                    <div class="phone-stat-value" style="color: var(--accent-purple);">7</div>
+                    <div class="phone-stat-label">Day Streak</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <h2>Powerful Features</h2>
+        <p>Everything you need to stay motivated and crush your fitness goals</p>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon green">
+            <i class="fas fa-bullseye"></i>
+          </div>
+          <h3>Daily Challenges</h3>
+          <p>Fresh challenges every day across cardio, strength, flexibility, and mindfulness categories.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon blue">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3>Google Fit Sync</h3>
+          <p>Automatically track your steps, calories, and active minutes with Google Fit integration.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon purple">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <h3>XP & Leveling</h3>
+          <p>Earn experience points for every challenge completed and level up through 50 ranks.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon orange">
+            <i class="fas fa-fire"></i>
+          </div>
+          <h3>Streak System</h3>
+          <p>Build momentum with daily streaks. The longer your streak, the bigger your rewards.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon yellow">
+            <i class="fas fa-medal"></i>
+          </div>
+          <h3>Achievements</h3>
+          <p>Unlock over 100 unique badges for milestones, streaks, and special accomplishments.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon pink">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3>Leaderboards</h3>
+          <p>Compete with friends and the global community. Climb the ranks every week.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works section" id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <h2>How It Works</h2>
+        <p>Get started in 4 simple steps</p>
+      </div>
+      
+      <div class="steps-container">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h4>Create Account</h4>
+          <p class="text-secondary">Sign up and complete your fitness profile with your goals and preferences.</p>
+        </div>
+        
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h4>Connect Tracker</h4>
+          <p class="text-secondary">Link Google Fit to automatically sync your activity data.</p>
+        </div>
+        
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h4>Accept Challenges</h4>
+          <p class="text-secondary">Browse daily challenges and accept ones that match your goals.</p>
+        </div>
+        
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h4>Earn Rewards</h4>
+          <p class="text-secondary">Complete challenges to earn XP, level up, and unlock badges.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gamification Preview -->
+  <section class="gamification-preview section" id="gamification">
+    <div class="container">
+      <div class="gamification-grid">
+        <div class="gamification-visual">
+          <div class="badge-preview earned">
+            <i class="fas fa-fire" style="color: var(--accent-orange);"></i>
+            <span>7-Day Warrior</span>
+          </div>
+          <div class="badge-preview earned">
+            <i class="fas fa-shoe-prints" style="color: var(--accent-green);"></i>
+            <span>Step Counter</span>
+          </div>
+          <div class="badge-preview">
+            <i class="fas fa-star" style="color: var(--accent-yellow);"></i>
+            <span>Rising Star</span>
+          </div>
+          <div class="badge-preview">
+            <i class="fas fa-dumbbell" style="color: var(--accent-blue);"></i>
+            <span>Iron Will</span>
+          </div>
+          <div class="badge-preview locked">
+            <i class="fas fa-crown"></i>
+            <span>Champion</span>
+          </div>
+          <div class="badge-preview locked">
+            <i class="fas fa-gem"></i>
+            <span>Diamond</span>
+          </div>
+        </div>
+        
+        <div class="gamification-content">
+          <h2>Gamification That <span style="color: var(--accent-green);">Actually Works</span></h2>
+          <p>Our reward system is designed by behavioral psychologists to keep you motivated long-term, not just for a quick dopamine hit.</p>
+          
+          <ul class="gamification-list">
+            <li>
+              <i class="fas fa-check-circle"></i>
+              <div>
+                <strong>Progressive XP System</strong>
+                <p class="text-secondary mb-0">50 levels with increasing challenges. Each level unlocks new features and harder challenges.</p>
+              </div>
+            </li>
+            <li>
+              <i class="fas fa-check-circle"></i>
+              <div>
+                <strong>Streak Multipliers</strong>
+                <p class="text-secondary mb-0">Maintain daily streaks for bonus XP. 7-day streaks give 1.5x XP, 30-day gives 2x!</p>
+              </div>
+            </li>
+            <li>
+              <i class="fas fa-check-circle"></i>
+              <div>
+                <strong>Badge Collection</strong>
+                <p class="text-secondary mb-0">100+ unique badges across 6 categories. Some are rare, some are secret.</p>
+              </div>
+            </li>
+          </ul>
+          
+          <a href="/auth.html?mode=register" class="btn btn-primary">
+            <i class="fas fa-play"></i>
+            Start Earning XP
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta section">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Ready to Transform Your Fitness?</h2>
+        <p>Join thousands of users who have already leveled up their health. Your first challenge awaits.</p>
+        
+        <div class="cta-buttons">
+          <a href="/auth.html?mode=register" class="btn btn-primary btn-lg">
+            <i class="fas fa-rocket"></i>
+            Create Free Account
+          </a>
+          <button class="btn btn-outline btn-lg" data-pwa-install>
+            <i class="fas fa-mobile-alt"></i>
+            Install App
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <div class="footer-brand">
+            <i class="fas fa-fire-flame-curved" style="color: var(--accent-green);"></i>
+            <span>GamifyFit</span>
+          </div>
+          <p>Transform your fitness journey into an epic adventure. Daily challenges, XP rewards, and a supportive community.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        
+        <div class="footer-column">
+          <h4>Product</h4>
+          <ul class="footer-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="/challenges.html">Challenges</a></li>
+            <li><a href="/leaderboard.html">Leaderboard</a></li>
+            <li><a href="/achievements.html">Achievements</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h4>Resources</h4>
+          <ul class="footer-links">
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">API Docs</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Community</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h4>Company</h4>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2024 GamifyFit. All rights reserved.</p>
+        <p>Made with <i class="fas fa-heart" style="color: var(--accent-red);"></i> for fitness enthusiasts</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- PWA Install Banner -->
+  <div id="install-banner">
+    <div class="banner-content">
+      <div class="banner-icon">
+        <i class="fas fa-fire-flame-curved"></i>
+      </div>
+      <div class="banner-text">
+        <h4>Install GamifyFit</h4>
+        <p>Add to your home screen for the best experience</p>
+      </div>
+    </div>
+    <div class="banner-actions">
+      <button class="btn btn-primary btn-sm" data-pwa-install>
+        <i class="fas fa-download"></i>
+        Install
+      </button>
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('install-banner').classList.remove('visible')">
+        Not Now
+      </button>
+    </div>
+  </div>
+
+  <!-- Offline Banner -->
+  <div id="offline-banner" class="offline-indicator" style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 1000;">
+    <i class="fas fa-wifi-slash"></i>
+    <span>You're offline</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/pwa.js"></script>
+  <script>
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+    
+    // Navbar scroll effect
+    const navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.style.background = 'rgba(15, 15, 26, 0.98)';
+      } else {
+        navbar.style.background = 'rgba(15, 15, 26, 0.95)';
+      }
+    });
+    
+    // Mobile menu toggle
+    const navbarToggle = document.querySelector('.navbar-toggle');
+    const navbarMenu = document.querySelector('.navbar-menu');
+    
+    navbarToggle?.addEventListener('click', () => {
+      navbarMenu.classList.toggle('active');
+    });
+    
+    // Animate elements on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-slideUp');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+    
+    document.querySelectorAll('.feature-card, .step-card, .badge-preview').forEach(el => {
+      el.style.opacity = '0';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#00ff88">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32x32.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/global.css">
+  
+  <title>Profile - GamifyFit</title>
+  
+  <style>
+    .profile-page {
+      min-height: 100vh;
+      padding-bottom: 100px;
+    }
+    
+    /* Profile Header */
+    .profile-header {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+      padding: var(--spacing-2xl) var(--spacing-lg);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .profile-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(0, 255, 136, 0.1) 0%, transparent 50%);
+      animation: pulse 8s ease-in-out infinite;
+    }
+    
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--spacing-md);
+      font-size: 3.5rem;
+      position: relative;
+      box-shadow: 0 0 40px rgba(0, 255, 136, 0.3);
+    }
+    
+    .avatar-edit {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 36px;
+      height: 36px;
+      background: var(--bg-secondary);
+      border: 2px solid var(--accent-green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .avatar-edit:hover {
+      background: var(--accent-green);
+      color: var(--bg-primary);
+    }
+    
+    .profile-name {
+      font-size: 1.75rem;
+      margin-bottom: var(--spacing-xs);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .profile-title {
+      color: var(--accent-green);
+      font-family: var(--font-heading);
+      font-weight: 600;
+      margin-bottom: var(--spacing-md);
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Level Badge */
+    .level-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      background: rgba(0, 255, 136, 0.15);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(0, 255, 136, 0.3);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .level-badge i {
+      color: var(--accent-yellow);
+    }
+    
+    .level-number {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+    
+    /* Stats Grid */
+    .profile-stats {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-xl);
+      margin-top: var(--spacing-lg);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .profile-stat {
+      text-align: center;
+    }
+    
+    .profile-stat-value {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .profile-stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    /* Main Content */
+    .profile-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: var(--spacing-lg);
+    }
+    
+    /* Section */
+    .profile-section {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      margin-bottom: var(--spacing-lg);
+      overflow: hidden;
+    }
+    
+    .section-header {
+      padding: var(--spacing-md) var(--spacing-lg);
+      background: var(--bg-tertiary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .section-title {
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+    
+    .section-title i {
+      color: var(--accent-green);
+    }
+    
+    .section-body {
+      padding: var(--spacing-lg);
+    }
+    
+    /* Info Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-md);
+    }
+    
+    .info-item {
+      padding: var(--spacing-md);
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+    }
+    
+    .info-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    
+    .info-value {
+      font-weight: 600;
+    }
+    
+    /* Google Fit Connection */
+    .connection-card {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+    }
+    
+    .connection-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    
+    .connection-icon.google {
+      background: linear-gradient(135deg, #4285f4 0%, #34a853 50%, #fbbc05 75%, #ea4335 100%);
+    }
+    
+    .connection-info {
+      flex: 1;
+    }
+    
+    .connection-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    
+    .connection-status {
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .connection-status.connected {
+      color: var(--accent-green);
+    }
+    
+    .connection-status.disconnected {
+      color: var(--text-muted);
+    }
+    
+    .btn-connection {
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-size: 0.85rem;
+    }
+    
+    /* Goals Section */
+    .goals-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+    
+    .goal-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+    }
+    
+    .goal-icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(0, 255, 136, 0.15);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-green);
+    }
+    
+    .goal-info {
+      flex: 1;
+    }
+    
+    .goal-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .goal-progress-bar {
+      height: 6px;
+      background: var(--bg-primary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    
+    .goal-progress-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+    }
+    
+    .goal-value {
+      text-align: right;
+    }
+    
+    .goal-current {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+    
+    .goal-target {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    /* Edit Form */
+    .edit-form {
+      display: none;
+    }
+    
+    .edit-form.active {
+      display: block;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-md);
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-lg);
+    }
+    
+    .form-actions .btn {
+      flex: 1;
+    }
+    
+    /* Settings List */
+    .settings-list {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .settings-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-md) 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .settings-item:last-child {
+      border-bottom: none;
+    }
+    
+    .settings-info {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+    
+    .settings-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+    }
+    
+    .settings-name {
+      font-weight: 500;
+    }
+    
+    .settings-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    
+    /* Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 26px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      transition: var(--transition-fast);
+    }
+    
+    .toggle-slider::before {
+      position: absolute;
+      content: '';
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      transition: var(--transition-fast);
+    }
+    
+    .toggle-switch input:checked + .toggle-slider {
+      background: var(--accent-green);
+    }
+    
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(24px);
+      background: var(--bg-primary);
+    }
+    
+    /* Danger Zone */
+    .danger-zone {
+      border-color: rgba(255, 71, 87, 0.3);
+    }
+    
+    .danger-zone .section-header {
+      background: rgba(255, 71, 87, 0.1);
+    }
+    
+    .danger-zone .section-title i {
+      color: var(--accent-red);
+    }
+    
+    .btn-danger {
+      background: transparent;
+      border: 1px solid var(--accent-red);
+      color: var(--accent-red);
+    }
+    
+    .btn-danger:hover {
+      background: var(--accent-red);
+      color: #fff;
+    }
+    
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      display: flex;
+      justify-content: space-around;
+      z-index: 100;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.7rem;
+      padding: var(--spacing-xs);
+      transition: color var(--transition-fast);
+    }
+    
+    .nav-item i {
+      font-size: 1.25rem;
+    }
+    
+    .nav-item:hover,
+    .nav-item.active {
+      color: var(--accent-green);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .profile-stats {
+        gap: var(--spacing-md);
+      }
+      
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-page">
+    <!-- Profile Header -->
+    <header class="profile-header">
+      <div class="profile-avatar">
+        👤
+        <div class="avatar-edit" onclick="changeAvatar()">
+          <i class="fas fa-camera"></i>
+        </div>
+      </div>
+      
+      <h1 class="profile-name" id="profile-name">John Doe</h1>
+      <div class="profile-title">Rising Star</div>
+      
+      <div class="level-badge">
+        <i class="fas fa-star"></i>
+        Level <span class="level-number">12</span>
+        <span style="color: var(--text-muted);">• 2,450 XP</span>
+      </div>
+      
+      <div class="profile-stats">
+        <div class="profile-stat">
+          <div class="profile-stat-value">24</div>
+          <div class="profile-stat-label">Workouts</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-value">12</div>
+          <div class="profile-stat-label">Badges</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-value">8</div>
+          <div class="profile-stat-label">Challenges</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-value">7</div>
+          <div class="profile-stat-label">Day Streak</div>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="profile-content">
+      <!-- Personal Info -->
+      <section class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-user"></i>
+            Personal Information
+          </h2>
+          <button class="btn btn-ghost" onclick="toggleEdit('info')">
+            <i class="fas fa-edit"></i>
+            Edit
+          </button>
+        </div>
+        
+        <div class="section-body">
+          <div class="info-view" id="info-view">
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-label">Full Name</div>
+                <div class="info-value" id="display-name">John Doe</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Email</div>
+                <div class="info-value" id="display-email">john@example.com</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Date of Birth</div>
+                <div class="info-value" id="display-dob">January 15, 1990</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Gender</div>
+                <div class="info-value" id="display-gender">Male</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Height</div>
+                <div class="info-value" id="display-height">178 cm</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Weight</div>
+                <div class="info-value" id="display-weight">74.2 kg</div>
+              </div>
+            </div>
+          </div>
+          
+          <form class="edit-form" id="info-form" onsubmit="saveInfo(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-input" id="edit-name" value="John Doe">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="edit-email" value="john@example.com">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Date of Birth</label>
+                <input type="date" class="form-input" id="edit-dob" value="1990-01-15">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Gender</label>
+                <select class="form-select" id="edit-gender">
+                  <option value="male" selected>Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Height (cm)</label>
+                <input type="number" class="form-input" id="edit-height" value="178">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Weight (kg)</label>
+                <input type="number" class="form-input" id="edit-weight" value="74.2" step="0.1">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" onclick="toggleEdit('info')">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </section>
+      
+      <!-- Connected Accounts -->
+      <section class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-link"></i>
+            Connected Accounts
+          </h2>
+        </div>
+        
+        <div class="section-body">
+          <div class="connection-card">
+            <div class="connection-icon google">
+              <i class="fab fa-google" style="color: white;"></i>
+            </div>
+            <div class="connection-info">
+              <div class="connection-name">Google Fit</div>
+              <div class="connection-status connected">
+                <i class="fas fa-check-circle"></i>
+                Connected • Last synced 2 hours ago
+              </div>
+            </div>
+            <button class="btn btn-outline btn-connection" onclick="disconnectGoogleFit()">
+              Disconnect
+            </button>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Fitness Goals -->
+      <section class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-bullseye"></i>
+            Fitness Goals
+          </h2>
+          <button class="btn btn-ghost" onclick="editGoals()">
+            <i class="fas fa-edit"></i>
+            Edit
+          </button>
+        </div>
+        
+        <div class="section-body">
+          <div class="goals-list">
+            <div class="goal-item">
+              <div class="goal-icon">
+                <i class="fas fa-weight-scale"></i>
+              </div>
+              <div class="goal-info">
+                <div class="goal-name">Target Weight</div>
+                <div class="goal-progress-bar">
+                  <div class="goal-progress-fill" style="width: 88%"></div>
+                </div>
+              </div>
+              <div class="goal-value">
+                <div class="goal-current">74.2 kg</div>
+                <div class="goal-target">Goal: 70 kg</div>
+              </div>
+            </div>
+            
+            <div class="goal-item">
+              <div class="goal-icon">
+                <i class="fas fa-shoe-prints"></i>
+              </div>
+              <div class="goal-info">
+                <div class="goal-name">Daily Steps</div>
+                <div class="goal-progress-bar">
+                  <div class="goal-progress-fill" style="width: 65%"></div>
+                </div>
+              </div>
+              <div class="goal-value">
+                <div class="goal-current">6,500</div>
+                <div class="goal-target">Goal: 10,000</div>
+              </div>
+            </div>
+            
+            <div class="goal-item">
+              <div class="goal-icon">
+                <i class="fas fa-dumbbell"></i>
+              </div>
+              <div class="goal-info">
+                <div class="goal-name">Weekly Workouts</div>
+                <div class="goal-progress-bar">
+                  <div class="goal-progress-fill" style="width: 80%"></div>
+                </div>
+              </div>
+              <div class="goal-value">
+                <div class="goal-current">4</div>
+                <div class="goal-target">Goal: 5</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Settings -->
+      <section class="profile-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-cog"></i>
+            Settings
+          </h2>
+        </div>
+        
+        <div class="section-body">
+          <div class="settings-list">
+            <div class="settings-item">
+              <div class="settings-info">
+                <div class="settings-icon">
+                  <i class="fas fa-bell"></i>
+                </div>
+                <div>
+                  <div class="settings-name">Push Notifications</div>
+                  <div class="settings-desc">Receive reminders and updates</div>
+                </div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked onchange="toggleSetting('notifications')">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            
+            <div class="settings-item">
+              <div class="settings-info">
+                <div class="settings-icon">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <div>
+                  <div class="settings-name">Email Updates</div>
+                  <div class="settings-desc">Weekly progress summaries</div>
+                </div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked onchange="toggleSetting('email')">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            
+            <div class="settings-item">
+              <div class="settings-info">
+                <div class="settings-icon">
+                  <i class="fas fa-moon"></i>
+                </div>
+                <div>
+                  <div class="settings-name">Dark Mode</div>
+                  <div class="settings-desc">Always use dark theme</div>
+                </div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked disabled>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            
+            <div class="settings-item">
+              <div class="settings-info">
+                <div class="settings-icon">
+                  <i class="fas fa-globe"></i>
+                </div>
+                <div>
+                  <div class="settings-name">Public Profile</div>
+                  <div class="settings-desc">Show on leaderboard</div>
+                </div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked onchange="toggleSetting('public')">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Danger Zone -->
+      <section class="profile-section danger-zone">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-exclamation-triangle"></i>
+            Account Actions
+          </h2>
+        </div>
+        
+        <div class="section-body">
+          <div style="display: flex; gap: var(--spacing-md); flex-wrap: wrap;">
+            <button class="btn btn-outline" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i>
+              Log Out
+            </button>
+            <button class="btn btn-danger" onclick="deleteAccount()">
+              <i class="fas fa-trash"></i>
+              Delete Account
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="/dashboard.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="/challenges.html" class="nav-item">
+        <i class="fas fa-crosshairs"></i>
+        <span>Challenges</span>
+      </a>
+      <a href="/plan.html" class="nav-item">
+        <i class="fas fa-calendar-check"></i>
+        <span>Plan</span>
+      </a>
+      <a href="/progress.html" class="nav-item">
+        <i class="fas fa-chart-line"></i>
+        <span>Progress</span>
+      </a>
+      <a href="/profile.html" class="nav-item active">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="/js/pwa.js"></script>
+  <script>
+    // Load user data
+    function loadUserData() {
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      if (userData.fullName) {
+        document.getElementById('profile-name').textContent = userData.fullName;
+        document.getElementById('display-name').textContent = userData.fullName;
+        document.getElementById('edit-name').value = userData.fullName;
+      }
+      if (userData.email) {
+        document.getElementById('display-email').textContent = userData.email;
+        document.getElementById('edit-email').value = userData.email;
+      }
+    }
+    
+    // Toggle edit mode
+    function toggleEdit(section) {
+      const view = document.getElementById(`${section}-view`);
+      const form = document.getElementById(`${section}-form`);
+      
+      if (view && form) {
+        view.style.display = view.style.display === 'none' ? 'block' : 'none';
+        form.classList.toggle('active');
+      }
+    }
+    
+    // Save personal info
+    function saveInfo(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('edit-name').value;
+      const email = document.getElementById('edit-email').value;
+      const dob = document.getElementById('edit-dob').value;
+      const gender = document.getElementById('edit-gender').value;
+      const height = document.getElementById('edit-height').value;
+      const weight = document.getElementById('edit-weight').value;
+      
+      // Update display
+      document.getElementById('display-name').textContent = name;
+      document.getElementById('display-email').textContent = email;
+      document.getElementById('display-dob').textContent = new Date(dob).toLocaleDateString('en-US', { 
+        year: 'numeric', month: 'long', day: 'numeric' 
+      });
+      document.getElementById('display-gender').textContent = gender.charAt(0).toUpperCase() + gender.slice(1);
+      document.getElementById('display-height').textContent = `${height} cm`;
+      document.getElementById('display-weight').textContent = `${weight} kg`;
+      document.getElementById('profile-name').textContent = name;
+      
+      // Save to localStorage
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      userData.fullName = name;
+      userData.email = email;
+      userData.dob = dob;
+      userData.gender = gender;
+      userData.height = height;
+      userData.weight = weight;
+      localStorage.setItem('userData', JSON.stringify(userData));
+      
+      toggleEdit('info');
+      
+      if (window.PWAManager) {
+        window.PWAManager.showToast('Profile updated successfully!', 'success');
+      }
+    }
+    
+    // Change avatar
+    function changeAvatar() {
+      alert('Avatar selection would open here. In a real app, you could upload an image or choose from preset avatars.');
+    }
+    
+    // Edit goals
+    function editGoals() {
+      alert('Goal editing would open here. You could set new targets for weight, steps, and workouts.');
+    }
+    
+    // Toggle setting
+    function toggleSetting(setting) {
+      const settings = JSON.parse(localStorage.getItem('settings') || '{}');
+      settings[setting] = !settings[setting];
+      localStorage.setItem('settings', JSON.stringify(settings));
+      
+      if (window.PWAManager) {
+        window.PWAManager.showToast(`Setting updated!`, 'success');
+      }
+    }
+    
+    // Disconnect Google Fit
+    function disconnectGoogleFit() {
+      if (confirm('Are you sure you want to disconnect Google Fit? Your sync data will be removed.')) {
+        alert('Google Fit disconnected. You can reconnect anytime from this page.');
+      }
+    }
+    
+    // Logout
+    function logout() {
+      if (confirm('Are you sure you want to log out?')) {
+        localStorage.removeItem('isLoggedIn');
+        window.location.href = '/auth.html';
+      }
+    }
+    
+    // Delete account
+    function deleteAccount() {
+      if (confirm('Are you sure you want to delete your account? This action cannot be undone!')) {
+        if (confirm('This will permanently delete all your data, achievements, and progress. Type "DELETE" to confirm.')) {
+          localStorage.clear();
+          alert('Account deleted. Redirecting to home page...');
+          window.location.href = '/index.html';
+        }
+      }
+    }
+    
+    // Initialize
+    loadUserData();
+  </script>
+</body>
+</html>
