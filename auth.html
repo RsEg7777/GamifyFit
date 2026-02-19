@@ -739,12 +739,14 @@
     });
     
     // Google OAuth - redirect to serverless function
-    document.getElementById('google-login').addEventListener('click', () => {
-      window.location.href = '/api/auth/google';
+    document.getElementById('google-login').addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.assign('/api/auth/google');
     });
     
-    document.getElementById('google-register').addEventListener('click', () => {
-      window.location.href = '/api/auth/google';
+    document.getElementById('google-register').addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.assign('/api/auth/google');
     });
     
     // Check for OAuth errors in URL
