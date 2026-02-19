@@ -738,14 +738,24 @@
       }, 1500);
     });
     
-    // Google OAuth placeholder
+    // Google OAuth - redirect to serverless function
     document.getElementById('google-login').addEventListener('click', () => {
-      alert('Google OAuth requires server-side setup. This would redirect to Google\'s authentication flow.');
+      window.location.href = '/api/auth/google';
     });
     
     document.getElementById('google-register').addEventListener('click', () => {
-      alert('Google OAuth requires server-side setup. This would redirect to Google\'s authentication flow.');
+      window.location.href = '/api/auth/google';
     });
+    
+    // Check for OAuth errors in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const authError = urlParams.get('error');
+    if (authError) {
+      const alertDiv = document.getElementById('login-alert');
+      alertDiv.className = 'alert alert-error';
+      alertDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> Authentication failed: ${authError.replace(/_/g, ' ')}`;
+      alertDiv.style.display = 'flex';
+    }
   </script>
 </body>
 </html>

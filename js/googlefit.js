@@ -6,7 +6,7 @@
 class GoogleFitManager {
   constructor() {
     // Google Fit API configuration
-    this.clientId = '643312726366-r96b78lprocgndp136hlq9s3q1gitjju.apps.googleusercontent.com';
+    this.clientId = '643312726366-vnsvoesalrm3jenlmejsj4rh8tgibjgv.apps.googleusercontent.com';
     this.scopes = [
       'https://www.googleapis.com/auth/fitness.activity.read',
       'https://www.googleapis.com/auth/fitness.body.read',
