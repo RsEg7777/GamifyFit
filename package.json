@@ -2,6 +2,10 @@
   "name": "gamifyfit",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
   "dependencies": {
     "jose": "^5.2.0"
   }
