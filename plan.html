@@ -668,7 +668,7 @@
           
           <div class="week-info">
             <div class="week-label" id="week-label">Week 3</div>
-            <div class="week-dates" id="week-dates">Jan 15 - Jan 21, 2024</div>
+            <div class="week-dates" id="week-dates">Jan 15 - Jan 21, 2026</div>
           </div>
           
           <button class="week-nav-btn" onclick="changeWeek(1)">
@@ -714,10 +714,26 @@
 
   <script src="/js/pwa.js"></script>
   <script>
+    // Compute current week start (Monday)
+    function getCurrentWeekStart() {
+      const now = new Date();
+      const day = now.getDay();
+      const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+      return new Date(now.setDate(diff));
+    }
+    const weekStart = getCurrentWeekStart();
+    const weekNum = Math.ceil(((weekStart - new Date(weekStart.getFullYear(),0,1)) / 86400000 + 1) / 7);
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+    document.getElementById('week-label').textContent = 'Week ' + weekNum;
+    document.getElementById('week-dates').textContent =
+      weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' - ' +
+      weekEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
     // Weekly plan data
     const weeklyPlan = {
-      weekNumber: 3,
-      startDate: new Date('2024-01-15'),
+      weekNumber: weekNum,
+      startDate: weekStart,
       days: [
         {
           name: 'Mon',

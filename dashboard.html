@@ -1057,9 +1057,9 @@
       document.getElementById('user-name').textContent = userData.fullName.split(' ')[0];
     }
 
-    // Seed demo data if first visit with no activity data
+    // Enable tracking if not yet enabled (starts at 0 — user logs their own activity)
     if (!window.ActivityTracker.isEnabled()) {
-      window.ActivityTracker.seedDemoData();
+      window.ActivityTracker.enableTracking();
     }
 
     // --- Dynamic Data from Gamification & ActivityTracker ---

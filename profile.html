@@ -520,30 +520,30 @@
         </div>
       </div>
       
-      <h1 class="profile-name" id="profile-name">John Doe</h1>
-      <div class="profile-title">Rising Star</div>
+      <h1 class="profile-name" id="profile-name">--</h1>
+      <div class="profile-title" id="profile-title">New Member</div>
       
       <div class="level-badge">
         <i class="fas fa-star"></i>
-        Level <span class="level-number">12</span>
-        <span style="color: var(--text-muted);">• 2,450 XP</span>
+        Level <span class="level-number" id="profile-level">1</span>
+        <span style="color: var(--text-muted);">• <span id="profile-xp">0</span> XP</span>
       </div>
       
       <div class="profile-stats">
         <div class="profile-stat">
-          <div class="profile-stat-value">24</div>
+          <div class="profile-stat-value" id="stat-workouts">0</div>
           <div class="profile-stat-label">Workouts</div>
         </div>
         <div class="profile-stat">
-          <div class="profile-stat-value">12</div>
+          <div class="profile-stat-value" id="stat-badges">0</div>
           <div class="profile-stat-label">Badges</div>
         </div>
         <div class="profile-stat">
-          <div class="profile-stat-value">8</div>
+          <div class="profile-stat-value" id="stat-challenges">0</div>
           <div class="profile-stat-label">Challenges</div>
         </div>
         <div class="profile-stat">
-          <div class="profile-stat-value">7</div>
+          <div class="profile-stat-value" id="stat-streak">0</div>
           <div class="profile-stat-label">Day Streak</div>
         </div>
       </div>
@@ -569,27 +569,27 @@
             <div class="info-grid">
               <div class="info-item">
                 <div class="info-label">Full Name</div>
-                <div class="info-value" id="display-name">John Doe</div>
+                <div class="info-value" id="display-name">Not set</div>
               </div>
               <div class="info-item">
                 <div class="info-label">Email</div>
-                <div class="info-value" id="display-email">john@example.com</div>
+                <div class="info-value" id="display-email">Not set</div>
               </div>
               <div class="info-item">
                 <div class="info-label">Date of Birth</div>
-                <div class="info-value" id="display-dob">January 15, 1990</div>
+                <div class="info-value" id="display-dob">Not set</div>
               </div>
               <div class="info-item">
                 <div class="info-label">Gender</div>
-                <div class="info-value" id="display-gender">Male</div>
+                <div class="info-value" id="display-gender">Not set</div>
               </div>
               <div class="info-item">
                 <div class="info-label">Height</div>
-                <div class="info-value" id="display-height">178 cm</div>
+                <div class="info-value" id="display-height">Not set</div>
               </div>
               <div class="info-item">
                 <div class="info-label">Weight</div>
-                <div class="info-value" id="display-weight">74.2 kg</div>
+                <div class="info-value" id="display-weight">Not set</div>
               </div>
             </div>
           </div>
@@ -598,22 +598,23 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Full Name</label>
-                <input type="text" class="form-input" id="edit-name" value="John Doe">
+                <input type="text" class="form-input" id="edit-name" value="">
               </div>
               <div class="form-group">
                 <label class="form-label">Email</label>
-                <input type="email" class="form-input" id="edit-email" value="john@example.com">
+                <input type="email" class="form-input" id="edit-email" value="">
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Date of Birth</label>
-                <input type="date" class="form-input" id="edit-dob" value="1990-01-15">
+                <input type="date" class="form-input" id="edit-dob" value="">
               </div>
               <div class="form-group">
                 <label class="form-label">Gender</label>
                 <select class="form-select" id="edit-gender">
-                  <option value="male" selected>Male</option>
+                  <option value="" selected>Select gender</option>
+                  <option value="male">Male</option>
                   <option value="female">Female</option>
                   <option value="other">Other</option>
                 </select>
@@ -859,18 +860,66 @@
   </div>
 
   <script src="/js/pwa.js"></script>
+  <script src="/js/gamification.js"></script>
+  <script src="/js/activityTracker.js"></script>
   <script>
-    // Load user data
+    // Load user data from localStorage + Gamification
     function loadUserData() {
       const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      const stats = window.Gamification.getStats();
+
+      // Header
+      document.getElementById('profile-name').textContent = userData.fullName || 'New User';
+      document.getElementById('profile-title').textContent = stats.title || 'New Member';
+      document.getElementById('profile-level').textContent = stats.level;
+      document.getElementById('profile-xp').textContent = stats.xp.toLocaleString();
+
+      // Stats
+      document.getElementById('stat-workouts').textContent = stats.stats.totalWorkouts;
+      document.getElementById('stat-badges').textContent = stats.badges;
+      document.getElementById('stat-challenges').textContent = stats.challengesCompleted;
+      document.getElementById('stat-streak').textContent = stats.streak.current;
+
+      // Personal info - display
       if (userData.fullName) {
-        document.getElementById('profile-name').textContent = userData.fullName;
         document.getElementById('display-name').textContent = userData.fullName;
         document.getElementById('edit-name').value = userData.fullName;
       }
       if (userData.email) {
         document.getElementById('display-email').textContent = userData.email;
         document.getElementById('edit-email').value = userData.email;
+      }
+      if (userData.dob) {
+        document.getElementById('display-dob').textContent = new Date(userData.dob).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('edit-dob').value = userData.dob;
+      }
+      if (userData.gender) {
+        document.getElementById('display-gender').textContent = userData.gender.charAt(0).toUpperCase() + userData.gender.slice(1);
+        document.getElementById('edit-gender').value = userData.gender;
+      }
+      if (userData.height) {
+        document.getElementById('display-height').textContent = userData.height + ' cm';
+        document.getElementById('edit-height').value = userData.height;
+      }
+      if (userData.weight) {
+        document.getElementById('display-weight').textContent = userData.weight + ' kg';
+        document.getElementById('edit-weight').value = userData.weight;
+      }
+
+      // Goals section — use real data from ActivityTracker
+      const summary = window.ActivityTracker.getTodaySummary();
+      const goalFills = document.querySelectorAll('.goal-progress-fill');
+      const goalCurrents = document.querySelectorAll('.goal-current');
+      if (userData.weight && goalCurrents[0]) {
+        goalCurrents[0].textContent = userData.weight + ' kg';
+      }
+      if (goalCurrents[1]) {
+        goalCurrents[1].textContent = summary.steps.toLocaleString();
+        goalFills[1].style.width = summary.stepsPercent + '%';
+      }
+      if (goalCurrents[2]) {
+        goalCurrents[2].textContent = stats.stats.totalWorkouts;
+        goalFills[2].style.width = Math.min(Math.round((stats.stats.totalWorkouts / 5) * 100), 100) + '%';
       }
     }
     

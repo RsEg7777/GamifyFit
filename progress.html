@@ -532,11 +532,11 @@
           <div class="stat-icon green">
             <i class="fas fa-bolt"></i>
           </div>
-          <div class="stat-value">2,450</div>
+          <div class="stat-value" id="pv-xp">0</div>
           <div class="stat-label">Total XP</div>
           <div class="stat-change positive">
             <i class="fas fa-arrow-up"></i>
-            +320 this month
+            Level <span id="pv-level">1</span>
           </div>
         </div>
         
@@ -544,11 +544,11 @@
           <div class="stat-icon blue">
             <i class="fas fa-dumbbell"></i>
           </div>
-          <div class="stat-value">24</div>
+          <div class="stat-value" id="pv-workouts">0</div>
           <div class="stat-label">Workouts</div>
           <div class="stat-change positive">
             <i class="fas fa-arrow-up"></i>
-            +6 vs last month
+            <span id="pv-minutes">0</span> total min
           </div>
         </div>
         
@@ -556,11 +556,11 @@
           <div class="stat-icon purple">
             <i class="fas fa-fire"></i>
           </div>
-          <div class="stat-value">42,800</div>
+          <div class="stat-value" id="pv-calories">0</div>
           <div class="stat-label">Calories Burned</div>
           <div class="stat-change positive">
             <i class="fas fa-arrow-up"></i>
-            +12%
+            This week
           </div>
         </div>
         
@@ -568,11 +568,11 @@
           <div class="stat-icon yellow">
             <i class="fas fa-trophy"></i>
           </div>
-          <div class="stat-value">8</div>
+          <div class="stat-value" id="pv-challenges">0</div>
           <div class="stat-label">Challenges Done</div>
           <div class="stat-change positive">
             <i class="fas fa-arrow-up"></i>
-            +3 this month
+            <span id="pv-badges">0</span> badges
           </div>
         </div>
         
@@ -580,11 +580,11 @@
           <div class="stat-icon red">
             <i class="fas fa-shoe-prints"></i>
           </div>
-          <div class="stat-value">185K</div>
+          <div class="stat-value" id="pv-steps">0</div>
           <div class="stat-label">Total Steps</div>
           <div class="stat-change positive">
             <i class="fas fa-arrow-up"></i>
-            +23K vs last month
+            <span id="pv-streak">0</span> day streak
           </div>
         </div>
       </div>
@@ -810,7 +810,7 @@
             <div class="challenge-badge">🏃</div>
             <div class="challenge-info">
               <div class="challenge-name">Marathon Prep Week</div>
-              <div class="challenge-date">Completed Jan 14, 2024</div>
+              <div class="challenge-date">Completed Jan 14, 2026</div>
             </div>
             <div class="challenge-xp">
               <div class="challenge-xp-value">+200</div>
@@ -822,7 +822,7 @@
             <div class="challenge-badge">💪</div>
             <div class="challenge-info">
               <div class="challenge-name">Core Crusher</div>
-              <div class="challenge-date">Completed Jan 12, 2024</div>
+              <div class="challenge-date">Completed Jan 12, 2026</div>
             </div>
             <div class="challenge-xp">
               <div class="challenge-xp-value">+175</div>
@@ -834,7 +834,7 @@
             <div class="challenge-badge">🧘</div>
             <div class="challenge-info">
               <div class="challenge-name">Morning Meditation</div>
-              <div class="challenge-date">Completed Jan 10, 2024</div>
+              <div class="challenge-date">Completed Jan 10, 2026</div>
             </div>
             <div class="challenge-xp">
               <div class="challenge-xp-value">+30</div>
@@ -846,7 +846,7 @@
             <div class="challenge-badge">💧</div>
             <div class="challenge-info">
               <div class="challenge-name">Hydration Hero</div>
-              <div class="challenge-date">Completed Jan 8, 2024</div>
+              <div class="challenge-date">Completed Jan 8, 2026</div>
             </div>
             <div class="challenge-xp">
               <div class="challenge-xp-value">+25</div>
@@ -883,70 +883,79 @@
   </div>
 
   <script src="/js/pwa.js"></script>
+  <script src="/js/gamification.js"></script>
+  <script src="/js/activityTracker.js"></script>
   <script>
+    // Populate stats from Gamification + ActivityTracker
+    const gStats = window.Gamification.getStats();
+    const weekTotals = window.ActivityTracker.getWeekTotals();
+    const weekDays = window.ActivityTracker.getWeekSummary();
+
+    document.getElementById('pv-xp').textContent = gStats.xp.toLocaleString();
+    document.getElementById('pv-level').textContent = gStats.level;
+    document.getElementById('pv-workouts').textContent = gStats.stats.totalWorkouts;
+    document.getElementById('pv-minutes').textContent = gStats.stats.totalMinutes.toLocaleString();
+    document.getElementById('pv-calories').textContent = weekTotals.calories.toLocaleString();
+    document.getElementById('pv-challenges').textContent = gStats.challengesCompleted;
+    document.getElementById('pv-badges').textContent = gStats.badges;
+    document.getElementById('pv-steps').textContent = weekTotals.steps.toLocaleString();
+    document.getElementById('pv-streak').textContent = gStats.streak.current;
+
     // Chart.js configuration
     Chart.defaults.color = '#8a8a9a';
     Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
     Chart.defaults.font.family = "'Poppins', sans-serif";
-    
+
+    // Build chart labels + data from real week data
+    const dayLabels = weekDays.map(d => {
+      const dt = new Date(d.date);
+      return dt.toLocaleDateString('en-US', { weekday: 'short' });
+    });
+    const calData = weekDays.map(d => d.calories);
+    const stepData = weekDays.map(d => d.steps);
+
     // Calories Chart
     const caloriesCtx = document.getElementById('caloriesChart').getContext('2d');
     new Chart(caloriesCtx, {
       type: 'line',
       data: {
-        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-        datasets: [
-          {
-            label: 'This Month',
-            data: [8500, 10200, 12400, 11700],
-            borderColor: '#00ff88',
-            backgroundColor: 'rgba(0, 255, 136, 0.1)',
-            fill: true,
-            tension: 0.4
-          },
-          {
-            label: 'Last Month',
-            data: [7200, 8100, 9500, 10000],
-            borderColor: '#8a8a9a',
-            borderDash: [5, 5],
-            fill: false,
-            tension: 0.4
-          }
-        ]
+        labels: dayLabels,
+        datasets: [{
+          label: 'Calories Burned',
+          data: calData,
+          borderColor: '#00e676',
+          backgroundColor: 'rgba(0, 230, 118, 0.1)',
+          fill: true,
+          tension: 0.4
+        }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
+        plugins: { legend: { display: false } },
         scales: {
-          y: {
-            beginAtZero: true,
-            grid: {
-              color: 'rgba(255, 255, 255, 0.05)'
-            }
-          },
-          x: {
-            grid: {
-              display: false
-            }
-          }
+          y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+          x: { grid: { display: false } }
         }
       }
     });
-    
-    // Weight Chart
+
+    // Weight Chart — use weight history from tracker
+    const weightHistory = window.ActivityTracker.getWeightHistory();
+    const wLabels = weightHistory.length ? weightHistory.map(w => {
+      const dt = new Date(w.date);
+      return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }) : ['No data'];
+    const wData = weightHistory.length ? weightHistory.map(w => w.weight) : [0];
+
     const weightCtx = document.getElementById('weightChart').getContext('2d');
     new Chart(weightCtx, {
       type: 'line',
       data: {
-        labels: ['Jan 1', 'Jan 5', 'Jan 10', 'Jan 15', 'Jan 20'],
+        labels: wLabels,
         datasets: [{
           label: 'Weight',
-          data: [76.5, 76.0, 75.3, 74.8, 74.2],
+          data: wData,
           borderColor: '#00d4ff',
           backgroundColor: 'rgba(0, 212, 255, 0.1)',
           fill: true,
@@ -956,40 +965,26 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
+        plugins: { legend: { display: false } },
         scales: {
-          y: {
-            min: 70,
-            max: 80,
-            grid: {
-              color: 'rgba(255, 255, 255, 0.05)'
-            }
-          },
-          x: {
-            grid: {
-              display: false
-            }
-          }
+          y: { grid: { color: 'rgba(255,255,255,0.05)' } },
+          x: { grid: { display: false } }
         }
       }
     });
-    
-    // Steps Chart
+
+    // Steps Chart — real weekly data
     const stepsCtx = document.getElementById('stepsChart').getContext('2d');
     new Chart(stepsCtx, {
       type: 'bar',
       data: {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        labels: dayLabels,
         datasets: [{
           label: 'Steps',
-          data: [8234, 12450, 6780, 9120, 11340, 15200, 8900],
+          data: stepData,
           backgroundColor: function(context) {
             const value = context.raw;
-            return value >= 10000 ? '#00ff88' : 'rgba(0, 255, 136, 0.4)';
+            return value >= 10000 ? '#00e676' : 'rgba(0, 230, 118, 0.4)';
           },
           borderRadius: 6
         }]
@@ -997,45 +992,19 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          },
-          annotation: {
-            annotations: {
-              line1: {
-                type: 'line',
-                yMin: 10000,
-                yMax: 10000,
-                borderColor: '#ffc107',
-                borderWidth: 2,
-                borderDash: [5, 5]
-              }
-            }
-          }
-        },
+        plugins: { legend: { display: false } },
         scales: {
-          y: {
-            beginAtZero: true,
-            grid: {
-              color: 'rgba(255, 255, 255, 0.05)'
-            }
-          },
-          x: {
-            grid: {
-              display: false
-            }
-          }
+          y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+          x: { grid: { display: false } }
         }
       }
     });
-    
+
     // Time filter
     document.querySelectorAll('.time-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        // In a real app, this would reload data for the selected period
       });
     });
   </script>
