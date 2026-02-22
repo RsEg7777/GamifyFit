@@ -25,7 +25,7 @@ const STATIC_ASSETS = [
   '/manifest.json',
   '/favicon.svg',
   '/css/global.css',
-  '/js/googlefit.js',
+  '/js/activityTracker.js',
   '/js/planGenerator.js',
   '/js/gamification.js',
   '/js/pwa.js',
@@ -35,8 +35,7 @@ const STATIC_ASSETS = [
 // API endpoints that should use network-first strategy
 const API_ENDPOINTS = [
   '/backend/api.php',
-  '/api/',
-  'https://www.googleapis.com/fitness/'
+  '/api/'
 ];
 
 // ===== INSTALL EVENT =====

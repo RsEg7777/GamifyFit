@@ -9,7 +9,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="/css/global.css">
   
@@ -801,7 +801,7 @@
         type: 'weekly',
         category: 'cardio',
         title: 'Marathon Prep',
-        description: 'Run a total of 50km this week. Track with Google Fit!',
+        description: 'Run a total of 50km this week. Log your runs in the activity tracker!',
         target: { value: 50, unit: 'km', current: 23 },
         xp: 200,
         participants: 654,
@@ -1072,8 +1072,8 @@
         updateCounts();
         
         // Show toast
-        if (window.PWAManager) {
-          window.PWAManager.showToast(`Joined: ${challenge.title}`, 'success');
+        if (window.pwaManager) {
+          window.pwaManager.showToast(`Joined: ${challenge.title}`, 'success');
         }
       }
     }

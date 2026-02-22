@@ -469,7 +469,7 @@ class GamificationManager {
     };
   }
 
-  // Log steps from Google Fit or manual entry
+  // Log steps from activity tracker or manual entry
   logSteps(steps) {
     this.data.stats.totalSteps += steps;
     

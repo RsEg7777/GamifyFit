@@ -9,7 +9,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="/css/global.css">
   
@@ -351,7 +351,7 @@
       transition: margin-left 0.3s ease;
     }
     
-    /* Google Fit Connect */
+    /* Activity Tracker Connect */
     .connect-section {
       text-align: center;
       padding: var(--spacing-xl);
@@ -731,38 +731,38 @@
             </div>
           </div>
           
-          <!-- Step 4: Connect Google Fit -->
+          <!-- Step 4: Activity Tracking Setup -->
           <div class="form-step" data-step="4">
             <div class="connect-section">
               <div class="connect-icon">
-                <img src="https://www.gstatic.com/images/branding/product/2x/google_fit_48dp.png" alt="Google Fit">
+                <i class="fas fa-heartbeat" style="font-size:3rem;color:var(--accent-green)"></i>
               </div>
               
-              <h3>Connect Google Fit</h3>
-              <p>Sync your activity data automatically for the best experience</p>
+              <h3>Activity Tracking</h3>
+              <p>GamifyFit tracks your activity right in the app — no external accounts needed</p>
               
               <div class="connect-features">
                 <div class="connect-feature">
                   <i class="fas fa-check-circle"></i>
-                  <span>Auto-sync steps</span>
+                  <span>Log steps, calories & workouts</span>
                 </div>
                 <div class="connect-feature">
                   <i class="fas fa-check-circle"></i>
-                  <span>Track calories</span>
+                  <span>Daily & weekly summaries</span>
                 </div>
                 <div class="connect-feature">
                   <i class="fas fa-check-circle"></i>
-                  <span>Monitor activity</span>
+                  <span>Automatic goal tracking</span>
                 </div>
               </div>
               
-              <button type="button" class="btn btn-primary btn-lg" id="connect-google-fit">
-                <i class="fab fa-google"></i>
-                Connect Google Fit
+              <button type="button" class="btn btn-primary btn-lg" onclick="enableTrackerAndContinue()">
+                <i class="fas fa-bolt"></i>
+                Enable Activity Tracker
               </button>
               
               <a href="#" class="skip-link" onclick="completeOnboarding(); return false;">
-                Skip for now, I'll connect later
+                Skip for now, I'll set up later
               </a>
             </div>
             
@@ -994,12 +994,12 @@
       showStep(currentStep);
     }
     
-    // Google Fit connection (placeholder)
-    document.getElementById('connect-google-fit').addEventListener('click', function() {
-      // In a real app, this would initiate OAuth flow
-      alert('Google Fit integration requires OAuth setup. This would redirect to Google\'s authentication flow.');
-      userData.googleFitConnected = true;
-    });
+    // Enable Activity Tracker and proceed
+    function enableTrackerAndContinue() {
+      userData.trackerEnabled = true;
+      localStorage.setItem('activityTrackerEnabled', 'true');
+      completeOnboarding();
+    }
     
     // Initialize
     updateProgressSteps();

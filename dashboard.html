@@ -10,7 +10,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="/css/global.css">
   
@@ -998,75 +998,192 @@
     <span>You're offline</span>
   </div>
 
+  <!-- Log Activity Modal -->
+  <div class="modal-overlay" id="log-activity-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fas fa-plus-circle" style="color:var(--accent-green)"></i> Log Activity</h3>
+        <button class="modal-close" onclick="closeLogModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Activity Type</label>
+          <select class="form-select" id="log-type">
+            <option value="walking">Walking</option>
+            <option value="running">Running</option>
+            <option value="cycling">Cycling</option>
+            <option value="strength">Strength Training</option>
+            <option value="yoga">Yoga</option>
+            <option value="hiit">HIIT</option>
+            <option value="swimming">Swimming</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-md)">
+          <div class="form-group">
+            <label class="form-label">Duration (min)</label>
+            <input type="number" class="form-input" id="log-duration" placeholder="30" min="1">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Calories Burned</label>
+            <input type="number" class="form-input" id="log-calories" placeholder="200" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Steps</label>
+            <input type="number" class="form-input" id="log-steps" placeholder="5000" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Water (glasses)</label>
+            <input type="number" class="form-input" id="log-water" placeholder="1" min="0">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeLogModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitLogActivity()">
+          <i class="fas fa-check"></i> Log Activity
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="/js/pwa.js"></script>
+  <script src="/js/gamification.js"></script>
+  <script src="/js/activityTracker.js"></script>
   <script>
     // Load user data
     const userData = JSON.parse(localStorage.getItem('userData') || '{}');
     if (userData.fullName) {
       document.getElementById('user-name').textContent = userData.fullName.split(' ')[0];
     }
-    
+
+    // Seed demo data if first visit with no activity data
+    if (!window.ActivityTracker.isEnabled()) {
+      window.ActivityTracker.seedDemoData();
+    }
+
+    // --- Dynamic Data from Gamification & ActivityTracker ---
+    function refreshDashboard() {
+      const stats = window.Gamification.getStats();
+      const summary = window.ActivityTracker.getTodaySummary();
+
+      // XP Section
+      document.getElementById('current-xp').textContent = stats.xp.toLocaleString();
+      document.getElementById('xp-needed').textContent = stats.xpToNextLevel.toLocaleString();
+      document.getElementById('xp-fill').style.width = stats.levelProgress.toFixed(0) + '%';
+      document.querySelector('.xp-level-number').textContent = 'Lv. ' + stats.level;
+      document.querySelector('.xp-level-title').textContent = stats.title;
+      document.querySelector('.user-title').textContent = '\uD83C\uDFC6 Level ' + stats.level + ' \u2014 ' + stats.title;
+      document.querySelector('.level-badge').textContent = stats.level;
+
+      // Activity rings
+      const circumference = 2 * Math.PI * 40;
+      const stepsOffset = circumference - (summary.stepsPercent / 100) * circumference;
+      const calOffset = circumference - (summary.caloriesPercent / 100) * circumference;
+      const activeOffset = circumference - (summary.activePercent / 100) * circumference;
+
+      document.getElementById('steps-ring').style.strokeDashoffset = stepsOffset;
+      document.getElementById('calories-ring').style.strokeDashoffset = calOffset;
+      document.getElementById('active-ring').style.strokeDashoffset = activeOffset;
+
+      document.getElementById('steps-value').textContent = summary.steps.toLocaleString();
+      document.getElementById('calories-value').textContent = summary.calories.toLocaleString();
+      document.getElementById('active-value').textContent = summary.activeMinutes;
+
+      // Quick stats
+      const qvs = document.querySelectorAll('.quick-stat-value');
+      qvs[0].textContent = stats.streak.current;
+      qvs[1].textContent = stats.challengesCompleted;
+      qvs[2].textContent = stats.badges;
+      qvs[3].textContent = stats.stats.totalWorkouts;
+
+      // Streak card
+      document.querySelector('.streak-number').innerHTML = stats.streak.current + ' <span>days</span>';
+
+      // Challenge progress from activity
+      const stProgress = Math.min(Math.round((summary.steps / 10000) * 100), 100);
+      document.getElementById('challenge-progress-fill').style.width = stProgress + '%';
+      document.getElementById('challenge-progress-text').textContent =
+        summary.steps.toLocaleString() + ' / 10,000 steps (' + stProgress + '%)';
+    }
+
+    // Listen for live updates
+    window.addEventListener('activity:updated', refreshDashboard);
+
+    // --- Log Activity Modal ---
+    function openLogModal() {
+      document.getElementById('log-activity-modal').classList.add('active');
+    }
+    function closeLogModal() {
+      document.getElementById('log-activity-modal').classList.remove('active');
+    }
+    function submitLogActivity() {
+      const type = document.getElementById('log-type').value;
+      const duration = parseInt(document.getElementById('log-duration').value) || 0;
+      const calories = parseInt(document.getElementById('log-calories').value) || 0;
+      const steps = parseInt(document.getElementById('log-steps').value) || 0;
+      const water = parseInt(document.getElementById('log-water').value) || 0;
+
+      if (duration || calories || steps) {
+        window.ActivityTracker.logActivity({ type, duration, calories, steps });
+      }
+      if (water > 0) {
+        window.ActivityTracker.logWater(water);
+      }
+
+      closeLogModal();
+      showXPNotification(50 + Math.floor(duration / 10) * 5);
+
+      // Reset form
+      document.getElementById('log-duration').value = '';
+      document.getElementById('log-calories').value = '';
+      document.getElementById('log-steps').value = '';
+      document.getElementById('log-water').value = '';
+    }
+
+    // Wire sync button to open log modal
+    document.querySelector('.activity-header .btn').addEventListener('click', openLogModal);
+
     // Show install prompt card if app not installed
     window.addEventListener('pwa:installable', () => {
       document.getElementById('install-prompt-card').style.display = 'flex';
     });
-    
-    // Check if already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
       document.getElementById('install-prompt-card').style.display = 'none';
     }
-    
+
     // Challenge completion
-    document.getElementById('complete-challenge-btn').addEventListener('click', async function() {
+    document.getElementById('complete-challenge-btn').addEventListener('click', function() {
       const btn = this;
       btn.disabled = true;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Completing...';
-      
-      // Simulate API call
       setTimeout(() => {
         btn.innerHTML = '<i class="fas fa-check"></i> Completed!';
         btn.classList.remove('btn-primary');
         btn.classList.add('btn-secondary');
-        
-        // Show XP earned animation
+        // Award XP via gamification
+        window.Gamification.completeChallenge({ id: 'daily-steps', xp: 75, type: 'cardio' });
         showXPNotification(75);
-        
-        // Update progress to 100%
-        document.getElementById('challenge-progress-fill').style.width = '100%';
-        document.getElementById('challenge-progress-text').textContent = '10,000 / 10,000 steps (100%)';
-      }, 1500);
+        refreshDashboard();
+      }, 1000);
     });
-    
+
     // XP notification
     function showXPNotification(xp) {
       const notification = document.createElement('div');
-      notification.className = 'xp-notification';
       notification.innerHTML = `<i class="fas fa-star"></i> +${xp} XP`;
       notification.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: var(--gradient-primary);
-        color: var(--bg-primary);
-        padding: 20px 40px;
-        border-radius: 16px;
-        font-family: var(--font-heading);
-        font-size: 1.5rem;
-        font-weight: 700;
-        z-index: 10000;
-        animation: xpPop 0.5s ease, fadeOut 0.5s ease 1.5s forwards;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      `;
-      
+        position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+        background:linear-gradient(135deg,var(--accent-green),var(--accent-blue));
+        color:var(--bg-primary);padding:20px 40px;border-radius:16px;
+        font-family:var(--font-heading);font-size:1.5rem;font-weight:700;
+        z-index:10000;animation:xpPop .5s ease,fadeOut .5s ease 1.5s forwards;
+        display:flex;align-items:center;gap:12px;`;
       document.body.appendChild(notification);
-      
-      setTimeout(() => notification.remove(), 2000);
+      setTimeout(() => notification.remove(), 2200);
     }
-    
-    // Add animation styles
+
+    // Animation styles
     const style = document.createElement('style');
     style.textContent = `
       @keyframes xpPop {
@@ -1074,41 +1191,13 @@
         50% { transform: translate(-50%, -50%) scale(1.2); }
         100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
       }
-      @keyframes fadeOut {
-        to { opacity: 0; transform: translate(-50%, -80%); }
-      }
+      @keyframes fadeOut { to { opacity: 0; transform: translate(-50%, -80%); } }
     `;
     document.head.appendChild(style);
-    
-    // Simulate activity ring updates (would come from Google Fit API)
-    function updateActivityRings() {
-      // In production, this would fetch from Google Fit API
-      const steps = 8432;
-      const stepsGoal = 10000;
-      const calories = 486;
-      const caloriesGoal = 600;
-      const active = 42;
-      const activeGoal = 60;
-      
-      const circumference = 2 * Math.PI * 40;
-      
-      const stepsOffset = circumference - (steps / stepsGoal) * circumference;
-      const caloriesOffset = circumference - (calories / caloriesGoal) * circumference;
-      const activeOffset = circumference - (active / activeGoal) * circumference;
-      
-      document.getElementById('steps-ring').style.strokeDashoffset = stepsOffset;
-      document.getElementById('calories-ring').style.strokeDashoffset = caloriesOffset;
-      document.getElementById('active-ring').style.strokeDashoffset = activeOffset;
-    }
-    
-    // Initialize
-    updateActivityRings();
-    
-    // Store current page for offline fallback
+
+    // Initialize dashboard
+    refreshDashboard();
     sessionStorage.setItem('lastVisitedPage', '/dashboard.html');
-    
-    // Sync timestamp
-    localStorage.setItem('lastSyncTime', Date.now().toString());
   </script>
 </body>
 </html>

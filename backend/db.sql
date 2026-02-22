@@ -46,11 +46,11 @@ CREATE TABLE IF NOT EXISTS users (
     total_workouts INT DEFAULT 0,
     total_active_minutes INT DEFAULT 0,
     
-    -- Google Fit integration
-    google_fit_connected BOOLEAN DEFAULT FALSE,
-    google_fit_refresh_token TEXT DEFAULT NULL,
-    google_fit_access_token TEXT DEFAULT NULL,
-    google_fit_token_expires_at DATETIME DEFAULT NULL,
+    -- Activity tracker integration
+    tracker_connected BOOLEAN DEFAULT FALSE,
+    tracker_refresh_token TEXT DEFAULT NULL,
+    tracker_access_token TEXT DEFAULT NULL,
+    tracker_token_expires_at DATETIME DEFAULT NULL,
     
     -- Account metadata
     is_verified BOOLEAN DEFAULT FALSE,
@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS user_challenges (
 ) ENGINE=InnoDB;
 
 -- =========================================
--- DAILY ACTIVITY (Google Fit / Manual)
+-- DAILY ACTIVITY (Built-in Tracker / Manual)
 -- =========================================
 
 CREATE TABLE IF NOT EXISTS daily_activity (
@@ -203,7 +203,7 @@ CREATE TABLE IF NOT EXISTS daily_activity (
     weight_kg DECIMAL(5,2) DEFAULT NULL,
     
     -- Data source
-    source ENUM('google_fit', 'apple_health', 'fitbit', 'manual', 'mixed') DEFAULT 'manual',
+    source ENUM('builtin', 'apple_health', 'fitbit', 'manual', 'mixed') DEFAULT 'manual',
     last_synced_at DATETIME DEFAULT NULL,
     
     -- Gamification

@@ -9,7 +9,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="/css/global.css">
   
@@ -203,7 +203,7 @@
       font-weight: 600;
     }
     
-    /* Google Fit Connection */
+    /* Activity Tracker Connection */
     .connection-card {
       display: flex;
       align-items: center;
@@ -648,18 +648,18 @@
         
         <div class="section-body">
           <div class="connection-card">
-            <div class="connection-icon google">
-              <i class="fab fa-google" style="color: white;"></i>
+            <div class="connection-icon" style="background:linear-gradient(135deg,var(--accent-green),var(--accent-blue))">
+              <i class="fas fa-heartbeat" style="color: white;"></i>
             </div>
             <div class="connection-info">
-              <div class="connection-name">Google Fit</div>
+              <div class="connection-name">Activity Tracker</div>
               <div class="connection-status connected">
                 <i class="fas fa-check-circle"></i>
-                Connected • Last synced 2 hours ago
+                Built-in • Tracking active
               </div>
             </div>
-            <button class="btn btn-outline btn-connection" onclick="disconnectGoogleFit()">
-              Disconnect
+            <button class="btn btn-outline btn-connection" onclick="disconnectTracker()">
+              Disable
             </button>
           </div>
         </div>
@@ -919,8 +919,8 @@
       
       toggleEdit('info');
       
-      if (window.PWAManager) {
-        window.PWAManager.showToast('Profile updated successfully!', 'success');
+      if (window.pwaManager) {
+        window.pwaManager.showToast('Profile updated successfully!', 'success');
       }
     }
     
@@ -940,15 +940,16 @@
       settings[setting] = !settings[setting];
       localStorage.setItem('settings', JSON.stringify(settings));
       
-      if (window.PWAManager) {
-        window.PWAManager.showToast(`Setting updated!`, 'success');
+      if (window.pwaManager) {
+        window.pwaManager.showToast(`Setting updated!`, 'success');
       }
     }
     
-    // Disconnect Google Fit
-    function disconnectGoogleFit() {
-      if (confirm('Are you sure you want to disconnect Google Fit? Your sync data will be removed.')) {
-        alert('Google Fit disconnected. You can reconnect anytime from this page.');
+    // Disconnect Activity Tracker
+    function disconnectTracker() {
+      if (confirm('Are you sure you want to disable activity tracking? Your data will be kept.')) {
+        localStorage.setItem('activityTrackerEnabled', 'false');
+        alert('Activity tracker disabled. You can re-enable it anytime from this page.');
       }
     }
     
